@@ -1,7 +1,7 @@
 name: Validar Casa+ renovado
 on:
   push:
-    branches: [feat/casa-compras-despesas-20261103]
+    branches: [main, feat/casa-compras-despesas-20261103]
     paths:
       - 'source/**'
       - '.github/workflows/build-source-casa.yml'
