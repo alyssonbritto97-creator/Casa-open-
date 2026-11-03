@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0B1D4D">
-<title>Casa+ • Converta+</title>
+<title>Casa+ • Painel do Lar</title>
 <style>
 :root{--navy:#0B1D4D;--navy2:#08143A;--mid:#3C508F;--sky:#8FA6E0;--green:#9BC53D;--green-d:#3F7A00;--bg:#F3F5FA;--line:#D9DEEA;--muted:#5C6A8A;--red:#E5334B}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -74,17 +74,67 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:6px 16px 0}
 .ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
 .ring b{font-size:22px;font-weight:900;color:#fff}
 .ring small{font-size:10px;color:#C9D3F0;letter-spacing:.04em}
+
+/* Casa+ 2: painel contemporâneo responsivo, sem alterar as ações já existentes */
+:root{--navy:#182844;--navy2:#0c1b33;--mid:#375473;--sky:#dae7ef;--green:#54e1c3;--green-d:#087965;--bg:#f3f7f9;--line:#dfe8ed;--muted:#62758a;--red:#d93e61}
+html,body{background:var(--bg);color:var(--navy)}
+body{max-width:860px;padding-bottom:105px}
+header{padding:14px 20px;background:rgba(248,251,252,.96);border-bottom:1px solid #dae4e9;box-shadow:0 2px 18px rgba(12,27,51,.04)}
+header .t{font-size:22px;letter-spacing:-.05em}
+header .t small{letter-spacing:.07em;color:#60849a}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(140deg,#142741,#345574);color:#7bffe0;box-shadow:0 6px 16px rgba(12,27,51,.18);font-size:22px;font-weight:900}
+main{padding:20px;gap:16px}
+.card{border-radius:23px;border-color:#e1e9ef;padding:19px;box-shadow:0 10px 32px rgba(29,57,88,.045)}
+.card.hero{background:linear-gradient(135deg,#1b3958 0%,#0c1a35 85%)}
+.card h2{font-size:12px;letter-spacing:.09em}
+.btn{background:#1f3b58;border-radius:12px}
+.btn.g{background:#58e3c6;color:#0d283c}
+.btn:focus-visible,nav button:focus-visible{outline:3px solid #42cdae;outline-offset:2px}
+input:focus,select:focus{outline:2px solid #36bba6;border-color:#36bba6}
+nav{box-shadow:0 -5px 24px rgba(12,27,51,.06);background:#fcfefe}
+nav div{max-width:860px;overflow-x:auto;scrollbar-width:none;justify-content:space-around}
+nav div::-webkit-scrollbar{display:none}
+nav button{min-width:80px;flex:1 0 auto;padding:13px 10px;color:#657990;font-size:12px;white-space:nowrap}
+nav button.on{color:#087b6e;box-shadow:inset 0 3px 0 #3bd4b2;background:#effdf9}
+.splash-title{font-size:28px;letter-spacing:-.06em;font-weight:900;margin:0 0 3px}
+.splash-caption{font-size:14px;color:var(--muted);margin:0 0 16px}
+.eyebrow{font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:#91b2c1;margin-bottom:9px}
+.hero-amount{font-size:36px;font-weight:950;letter-spacing:-.05em;line-height:1.12;margin:10px 0}
+.hero-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+.hero-bottom span{color:#c2d9e6;font-size:12px}
+.progress{height:8px;border-radius:100px;background:rgba(255,255,255,.17);overflow:hidden;margin:14px 0 8px}
+.progress i{display:block;height:100%;border-radius:100px;background:#62ebc6}
+.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;min-width:0}
+.stat .icon{display:flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:11px;background:#eafaf5;font-size:17px}
+.stat strong{display:block;font-size:23px;margin-top:13px;letter-spacing:-.04em;overflow-wrap:anywhere}
+.stat span{font-size:12px;color:var(--muted);display:block;margin-top:3px}
+.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.quick{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:15px 5px;border-radius:16px;background:#edf5f8;border:1px solid #dce8ec;font-size:12px;font-weight:800;color:#274763;cursor:pointer}
+.quick b{font-size:23px}
+.split-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.split-head h2{margin:0}
+.link{border:0;background:transparent;color:#087965;font-weight:800;cursor:pointer;padding:6px;font-size:12px}
+.meal-day{margin-bottom:12px;border:1px solid #e5ebf0;background:#fbfdfe;border-radius:18px;padding:14px}
+.meal-day.today{border-color:#75d9c5;background:#f1fffa}
+.meal-day-title{display:flex;justify-content:space-between;align-items:center;font-weight:900;margin-bottom:9px}
+.meal-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.meal-row:first-of-type{border:0}
+.meal-row .n{flex:1;min-width:0}
+.meal-row .n small{display:block;color:#638194;margin-top:4px}
+.tiny{font-size:11px;background:#e4faf4;color:#187664;border-radius:90px;padding:5px 9px;font-weight:800}
+@media(max-width:420px){main{padding:12px}.card{padding:15px}.hero-amount{font-size:31px}.quick-grid{gap:6px}.quick{padding:12px 4px;font-size:11px}nav button{min-width:76px}}
 </style>
 </head>
 <body>
 <header>
-  <img src="/logo.png" alt="Converta+">
-  <div class="t">Casa+<small>COTA DA CASA</small></div>
+  <div class="brand-mark" aria-hidden="true">⌂</div>
+  <div class="t">Casa+<small>MEU LAR ORGANIZADO</small></div>
   <div class="sp"></div>
   <span id="admBox"></span>
 </header>
 <main id="view"><div class="empty">Carregando…</div></main>
-<footer>Casa+ • Converta+ • Desenvolvido por Jose Brito</footer>
+<footer>Casa+ • Compras, finanças e organização do lar</footer>
 <nav><div id="nav"></div></nav>
 <div id="modal"><div class="box" id="mbox"></div></div>
 
@@ -93,10 +143,10 @@ const $ = s => document.querySelector(s);
 let S = null, lastJson = '';
 let me = localStorage.getItem('casa_me') || '';
 let token = sessionStorage.getItem('casa_adm') || '';
-let tab = 'semana', period = 'mes';
-const TABS = [['semana','Semana'],['lista','Lista'],['gastos','Gastos'],['pessoas','Pessoas']];
+let tab = 'inicio', period = 'mes';
+const TABS = [['inicio','Início'],['semana','Escala'],['lista','Compras'],['gastos','Finanças'],['cardapio','Cardápio'],['pessoas','Pessoas']];
 const AVC = [['#0B1D4D','#fff'],['#9BC53D','#0B1D4D'],['#3C508F','#fff'],['#8FA6E0','#0B1D4D'],['#5E8A12','#fff'],['#1F3A8A','#fff']];
-const KIND = {compra:['Compra','#0B1D4D'], energia:['Energia','#9BC53D'], outro:['Outro','#8FA6E0']};
+const KIND = {compra:['Compra','#183a56'],mercado:['Mercado','#248e77'],energia:['Energia','#d4a632'],agua:['Água','#5a9bdf'],internet:['Internet','#8c79d9'],aluguel:['Aluguel','#de7984'],gas:['Gás','#ea8842'],limpeza:['Limpeza','#52a690'],saude:['Saúde','#b870c3'],transporte:['Transporte','#6a9e4e'],manutencao:['Manutenção','#658caa'],outro:['Outro','#8FA6E0']};
 
 async function api(path, method, body) {
   const r = await fetch('/api/' + path, {
@@ -164,7 +214,7 @@ function renderHeader() {
   $('#nav').innerHTML = TABS.map(([k,l]) => '<button class="' + (tab===k?'on':'') + '" onclick="go(\'' + k + '\')">' + l + '</button>').join('');
 }
 function go(t) { tab = t; lastJson = ''; render(); window.scrollTo(0,0); }
-function render() { renderHeader(); $('#view').innerHTML = ({semana, lista, gastos, pessoas}[tab])(); }
+function render() { renderHeader(); $('#view').innerHTML = ({inicio, semana, lista, gastos, cardapio, pessoas}[tab])(); }
 
 function whoSelect() {
   const ppl = activeMembers();
@@ -175,7 +225,45 @@ function whoSelect() {
 }
 function setMe(v) { me = v; if (v) localStorage.setItem('casa_me', v); else localStorage.removeItem('casa_me'); }
 
+
+function inicio() {
+  const today = new Date(), month = S.today.slice(0,7);
+  const entries = S.expenses.filter(e => e.date.startsWith(month));
+  const total = entries.reduce((n,e)=>n+e.amount,0);
+  const goal = Number(S.settings.monthly_goal || 0);
+  const pending = S.items.filter(i=>!i.bought);
+  const bought = S.items.filter(i=>i.bought).length;
+  const meals = S.menu || [];
+  const ws = monday(today), buyer = buyerFor(ws);
+  const buyerName = buyer && buyer.id ? nameOf(buyer.id) : 'A definir';
+  const day = (today.getDay()+6)%7;
+  const todayMeals = meals.filter(m=>m.day===day);
+  const mealNames={cafe:'Café da manhã',almoco:'Almoço',lanche:'Lanche',jantar:'Jantar'};
+  const progress = goal > 0 ? Math.min(100,Math.round(total*100/goal)) : 0;
+  let h = '<section><div class="eyebrow">Seu espaço, sua rotina</div><h1 class="splash-title">Visão geral da casa</h1><p class="splash-caption">Tudo o que importa, num só lugar.</p></section>';
+  h += '<div class="card hero"><div class="eyebrow">Despesas deste mês</div><div class="hero-amount">'+gs(total)+'</div><div class="hero-bottom"><span>'+(goal>0?'Orçamento: '+gs(goal):'Defina uma meta em Pessoas')+'</span><span>'+entries.length+' lançamento(s)</span></div>'+(goal>0?'<div class="progress"><i style="width:'+progress+'%"></i></div><div class="hero-bottom"><span>'+(total<=goal?'Disponível: '+gs(goal-total):'Acima da meta: '+gs(total-goal))+'</span><span>'+Math.round(total*100/goal)+'% utilizado</span></div>':'')+'</div>';
+  h += '<div class="statgrid">'+
+    '<div class="stat"><div class="icon">🛒</div><strong>'+pending.length+'</strong><span>Produtos para comprar</span></div>'+
+    '<div class="stat"><div class="icon">✓</div><strong>'+bought+'</strong><span>Itens já comprados</span></div>'+
+    '<div class="stat"><div class="icon">👥</div><strong>'+activeMembers().length+'</strong><span>Participantes da casa</span></div>'+
+    '<div class="stat"><div class="icon">🍽️</div><strong>'+meals.length+'</strong><span>Refeições planejadas</span></div></div>';
+  h += '<div class="card"><div class="split-head"><h2>Acesso rápido</h2></div><div class="quick-grid">'+
+    '<button class="quick" onclick="go(\'lista\')"><b>🛍️</b>Compras</button>'+
+    '<button class="quick" onclick="go(\'gastos\')"><b>📊</b>Finanças</button>'+
+    '<button class="quick" onclick="go(\'cardapio\')"><b>🍴</b>Cardápio</button></div></div>';
+  h += '<div class="card"><div class="split-head"><h2>Quem compra nesta semana?</h2><button class="link" onclick="go(\'semana\')">Ver escala →</button></div><div style="font-weight:900;font-size:23px">'+esc(buyerName)+'</div><div class="mut">Semana de '+br(ws)+'.</div></div>';
+  h += '<div class="card"><div class="split-head"><h2>Lista de compras</h2><button class="link" onclick="go(\'lista\')">Ver tudo →</button></div>';
+  h += pending.length?pending.slice(0,5).map(i=>'<div class="row"><div class="n"><b>'+esc(i.name)+'</b>'+(i.qty?'<span class="chip">'+esc(i.qty)+'</span>':'')+'</div><span class="tiny">Pendente</span></div>').join(''):'<div class="empty">Lista em dia! Adicione o que estiver faltando.</div>';
+  h += '</div><div class="card"><div class="split-head"><h2>Cardápio de hoje</h2><button class="link" onclick="go(\'cardapio\')">Planejar →</button></div>';
+  h += todayMeals.length?todayMeals.map(m=>'<div class="row"><div class="n"><b>'+esc(m.dish)+'</b><span class="chip">'+esc(mealNames[m.meal]||m.meal)+'</span></div></div>').join(''):'<div class="empty">Ainda não há refeições planejadas para hoje.</div>';
+  h += '</div>';
+  if(entries.length){h += '<div class="card"><div class="split-head"><h2>Últimos gastos</h2><button class="link" onclick="go(\'gastos\')">Detalhes →</button></div>'+
+    entries.slice(0,4).map(e=>'<div class="row"><div class="n"><b>'+esc(e.note||KIND[e.kind]?.[0]||'Despesa')+'</b><span class="chip">'+esc(e.date)+'</span></div><strong>'+gs(e.amount)+'</strong></div>').join('')+'</div>';}
+  return h;
+}
+
 // ---------------- Semana ----------------
+
 function semana() {
   const ppl = activeMembers();
   if (!ppl.length) {
@@ -287,12 +375,12 @@ function gastos() {
 
   h += '<div class="card"><h2>Registrar gasto</h2><div class="f">' +
        '<select id="emem"><option value="">Quem pagou?</option>' + ppl.map(m => '<option value="' + m.id + '"' + (String(m.id)===me?' selected':'') + '>' + esc(m.name) + '</option>').join('') + '</select>' +
-       '<div class="f2"><input id="eval" inputmode="numeric" placeholder="Valor em Gs"><select id="ekind"><option value="compra">Compra</option><option value="energia">Energia</option><option value="outro">Outro</option></select></div>' +
+       '<div class="f2"><input id="eval" inputmode="numeric" placeholder="Valor em Gs"><select id="ekind">'+Object.entries(KIND).map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join('')+'</select></div>' +
        '<input id="enote" placeholder="Anotação (opcional)" maxlength="80">' +
        '<button class="btn g" onclick="addExp()">Salvar gasto</button></div></div>';
 
   if (total > 0) {
-    const bykind = {compra:0, energia:0, outro:0}; list.forEach(e => bykind[e.kind] = (bykind[e.kind] || 0) + e.amount);
+    const bykind = Object.fromEntries(Object.keys(KIND).map(k=>[k,0])); list.forEach(e => bykind[e.kind] = (bykind[e.kind] || 0) + e.amount);
     h += '<div class="card"><h2>Gastos por tipo</h2><div class="stack">' +
       Object.keys(bykind).filter(k => bykind[k] > 0).map(k => '<i style="flex:' + bykind[k] + ';background:' + KIND[k][1] + '"></i>').join('') + '</div><div class="legend">' +
       Object.keys(bykind).filter(k => bykind[k] > 0).map(k => '<span><span class="dot" style="background:' + KIND[k][1] + '"></span>' + KIND[k][0] + ' <b>' + Math.round(bykind[k] * 100 / total) + '%</b> • ' + gs(bykind[k]) + '</span>').join('') + '</div></div>';
@@ -339,7 +427,67 @@ function addExp() {
 }
 function delExp(id) { if (confirm('Apagar este gasto?')) call('expenses/' + id, 'DELETE'); }
 
+
+const MEAL_TYPES = [['cafe','Café da manhã'],['almoco','Almoço'],['lanche','Lanche'],['jantar','Jantar']];
+const WEEK_DAYS = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo'];
+function cardapio() {
+  const meals = S.menu || [], today = (new Date().getDay()+6)%7;
+  let h = '<section><div class="eyebrow">Planejamento semanal</div><h1 class="splash-title">Cardápio da casa</h1><p class="splash-caption">Organize as refeições e prepare sua lista de compras.</p></section>';
+  if(token) {
+    h += '<div class="card" id="meal-editor"><h2>Planejar refeição</h2><div class="f"><div class="f2"><select id="mday">'+WEEK_DAYS.map((d,i)=>'<option value="'+i+'"'+(i===today?' selected':'')+'>'+d+'</option>').join('')+'</select>'+
+    '<select id="mtype">'+MEAL_TYPES.map(([k,n])=>'<option value="'+k+'">'+n+'</option>').join('')+'</select></div>'+
+    '<input id="mdish" placeholder="Ex.: arroz, feijão e frango" maxlength="100">'+
+    '<input id="mnote" placeholder="Ingredientes separados por vírgulas (opcional)" maxlength="180">'+
+    '<button class="btn g" onclick="saveMeal()">Salvar no cardápio</button></div></div>';
+  } else {
+    h += '<div class="card"><div class="mut">O administrador pode editar as refeições. Você pode consultar o cardápio e sugerir compras.</div></div>';
+  }
+  WEEK_DAYS.forEach((day,di)=>{
+    const ms=meals.filter(m=>m.day===di);
+    h+='<div class="meal-day'+(di===today?' today':'')+'"><div class="meal-day-title"><span>'+day+'</span>'+(di===today?'<span class="tiny">Hoje</span>':'')+'</div>';
+    if(!ms.length) h+='<div class="mut">Nenhuma refeição planejada.</div>';
+    MEAL_TYPES.forEach(([k,label])=>{
+      const m=ms.find(x=>x.meal===k);if(!m)return;
+      h+='<div class="meal-row"><div class="n"><small>'+label+'</small><b>'+esc(m.dish)+'</b>'+(m.note?'<small>Ingredientes: '+esc(m.note)+'</small>':'')+'</div>';
+      if(token)h+='<button class="btn o s" onclick="editMeal('+di+',\''+k+'\')">Editar</button><button class="btn r s" onclick="deleteMeal('+di+',\''+k+'\')">×</button>';
+      h+='</div>';
+      if(m.note) h+='<div style="text-align:right"><button class="link" onclick="addMealIngredients('+di+',\''+k+'\')">+ Ingredientes na lista</button></div>';
+    });
+    h+='</div>';
+  });
+  return h;
+}
+function editMeal(day,meal){
+  const m=(S.menu||[]).find(x=>x.day===day&&x.meal===meal);
+  if(!m||!token)return;
+  $('#mday').value=String(day);$('#mtype').value=meal;$('#mdish').value=m.dish;$('#mnote').value=m.note||'';
+  $('#meal-editor').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function saveMeal(){
+  const dish=$('#mdish').value.trim();
+  if(!dish){alert('Informe o prato.');return;}
+  call('menu','POST',{day:Number($('#mday').value),meal:$('#mtype').value,dish,note:$('#mnote').value.trim()});
+}
+function deleteMeal(day,meal){
+  if(confirm('Apagar esta refeição do cardápio?'))call('menu?day='+day+'&meal='+encodeURIComponent(meal),'DELETE');
+}
+async function addMealIngredients(day,meal){
+  const m=(S.menu||[]).find(x=>x.day===day&&x.meal===meal);
+  if(!m||!m.note)return;
+  const names=[...new Set(m.note.split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean))].slice(0,12);
+  const pending=new Set(S.items.filter(x=>!x.bought).map(x=>x.name.toLowerCase()));
+  const fresh=names.filter(x=>!pending.has(x.toLowerCase()));
+  if(!fresh.length){alert('Os ingredientes já estão na lista de compras.');return;}
+  if(!confirm('Adicionar '+fresh.length+' ingrediente(s) à lista de compras?'))return;
+  try{
+    for(const name of fresh) await api('items','POST',{name,qty:'',by:me?Number(me):null});
+    await load(true);
+    alert('Ingredientes adicionados à lista de compras.');
+  }catch(e){alert(e.message);}
+}
+
 // ---------------- Pessoas ----------------
+
 function pessoas() {
   const ppl = activeMembers();
   let h = '<div class="card"><h2>Pessoas da cota</h2>';
