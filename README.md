@@ -11,6 +11,14 @@ Aplicativo Android com painel familiar acessível por navegador na **mesma rede 
 - **Pessoas**: cadastro, ordem do rodízio, meta mensal e acesso de administrador por PIN.
 - Banco SQLite migrado da v1 para a v2 sem apagar pessoas, compras ou despesas anteriores.
 
+## Sincronização dos celulares pela mesma rede Wi-Fi
+- O celular Android do administrador continua sendo o **servidor da casa**: abra o aplicativo e mantenha o servidor ligado.
+- Os demais celulares (Android ou iPhone) abrem **o mesmo endereço local** fornecido pelo aplicativo, no navegador, sem precisar instalar o APK.
+- Cada mudança na lista de compras ou nas despesas fica no banco central do administrador. As outras telas consultam as atualizações aproximadamente **a cada 2,5 segundos** enquanto estão abertas.
+- O painel mostra **Sincronizado** ou **Sem conexão**. Se a pessoa estiver digitando, a tela não sobrescreve o campo: aparece **Novidades · atualizar**, com atualização após sair do campo.
+- Não é necessário que todos abram o painel ao mesmo tempo; o servidor precisa permanecer acessível na rede. Wi-Fi com isolamento de clientes (como redes de convidados) pode bloquear o acesso entre celulares.
+- A aba **Colaboração** resume a semana: itens efetivamente marcados como comprados, despesas e pedidos na lista por pessoa. Compras registradas à noite entram na respectiva semana. "Sem registro" não significa que a pessoa não ajudou fora do aplicativo.
+
 ## Acesso e segurança
 - Somente o aplicativo Android administrador mantém os dados. Outros celulares no mesmo Wi-Fi acessam o endereço IP mostrado pelo aplicativo. Acessar de fora de casa exige infraestrutura adicional.
 - O servidor **precisa permanecer ligado** no celular Android. Se o telefone for desligado, sair da rede ou o serviço parar, o painel não ficará acessível.
