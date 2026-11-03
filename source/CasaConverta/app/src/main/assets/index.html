@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B1D4D">
+<title>Casa+ • Painel do Lar</title>
+<style>
+:root{--navy:#0B1D4D;--navy2:#08143A;--mid:#3C508F;--sky:#8FA6E0;--green:#9BC53D;--green-d:#3F7A00;--bg:#F3F5FA;--line:#D9DEEA;--muted:#5C6A8A;--red:#E5334B}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--navy);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px}
+body{padding-bottom:84px;max-width:720px;margin:0 auto}
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;position:sticky;top:0;background:rgba(243,245,250,.94);backdrop-filter:blur(8px);z-index:5;border-bottom:1px solid var(--line)}
+header img{height:38px;width:auto}
+header .t{font-weight:900;font-size:20px;line-height:1}
+header .t small{display:block;font-weight:600;font-size:10px;color:var(--muted);letter-spacing:.08em;margin-top:3px}
+header .sp{flex:1}
+.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:700;font-size:15px;cursor:pointer;background:var(--navy);color:#fff;transition:transform .08s}
+.btn:active{transform:scale(.97)}
+.btn.g{background:var(--green);color:var(--navy)}
+.btn.o{background:#fff;color:var(--navy);border:1px solid var(--line)}
+.btn.r{background:#fff;color:var(--red);border:1px solid var(--line)}
+.btn.s{padding:7px 11px;font-size:13px;border-radius:10px}
+main{padding:14px 16px;display:grid;gap:14px}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 6px 18px rgba(11,29,77,.05);animation:up .35s ease both}
+.card.hero{background:linear-gradient(135deg,var(--navy) 0%,var(--navy2) 100%);color:#fff;border:0;position:relative;overflow:hidden}
+.card.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(155,197,61,.28),rgba(155,197,61,0) 70%)}
+.card h2{margin:0 0 10px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card.hero h2{color:#C9D3F0}
+.big{font-size:34px;font-weight:900;line-height:1.1}
+.mut{color:var(--muted);font-size:13px}
+.hero .mut{color:#C9D3F0}
+.row{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .n{flex:1;min-width:0;overflow-wrap:anywhere}
+.row .n b{display:block}
+.pill{display:inline-block;border-radius:99px;padding:3px 10px;font-size:12px;font-weight:700;background:var(--green);color:var(--navy)}
+input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;color:var(--navy);background:#fff;font-family:inherit}
+.f{display:grid;gap:8px}
+.f2{display:grid;grid-template-columns:2fr 1fr;gap:8px}
+nav{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);display:flex;justify-content:center;z-index:6;padding-bottom:env(safe-area-inset-bottom)}
+nav div{display:flex;width:100%;max-width:720px}
+nav button{flex:1;border:0;background:none;padding:12px 4px 10px;font-weight:700;font-size:13px;color:var(--muted);cursor:pointer}
+nav button.on{color:var(--navy);box-shadow:inset 0 3px 0 var(--green)}
+.pos{color:var(--green-d);font-weight:800}.neg{color:var(--red);font-weight:800}
+.tg{display:flex;gap:8px}.tg .btn{flex:1}
+.empty{color:var(--muted);text-align:center;padding:14px 0;font-size:14px}
+#modal{position:fixed;inset:0;background:rgba(11,29,77,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}
+#modal .box{background:#fff;border-radius:22px;padding:20px;width:100%;max-width:380px;display:grid;gap:12px}
+.err{color:var(--red);font-size:14px;min-height:18px}
+.chip{font-size:12px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:11px;padding:6px 16px 0}
+.av{width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;flex:none}
+.av.l{width:64px;height:64px;font-size:26px;border:3px solid rgba(255,255,255,.25)}
+.heroRow{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.heroRow .grow{flex:1;min-width:0}
+.stack{display:flex;height:16px;border-radius:99px;overflow:hidden;gap:3px}
+.stack i{display:block;height:100%;border-radius:99px;animation:up .5s ease both}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:12px;font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:160px;margin-top:4px}
+.bars .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;min-width:0}
+.bars .b i{display:block;width:100%;border-radius:10px 10px 4px 4px;background:var(--navy);min-height:3px;transform-origin:bottom;animation:grow .6s ease both}
+.bars .b.now i{background:var(--green)}
+.bars .b span{font-size:11px;color:var(--muted);margin-top:5px}
+.bars .b em{font-style:normal;font-size:10.5px;font-weight:800;margin-bottom:4px;white-space:nowrap}
+.bal{height:6px;border-radius:99px;background:#E8ECF6;position:relative;margin-top:7px}
+.bal::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--line)}
+.bal i{position:absolute;top:0;bottom:0;border-radius:99px}
+.ring{flex:none;position:relative;width:104px;height:104px}
+.ring svg{display:block}
+.ring div{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+.ring b{font-size:22px;font-weight:900;color:#fff}
+.ring small{font-size:10px;color:#C9D3F0;letter-spacing:.04em}
+
+/* Casa+ 2: painel contemporâneo responsivo, sem alterar as ações já existentes */
+:root{--navy:#182844;--navy2:#0c1b33;--mid:#375473;--sky:#dae7ef;--green:#54e1c3;--green-d:#087965;--bg:#f3f7f9;--line:#dfe8ed;--muted:#62758a;--red:#d93e61}
+html,body{background:var(--bg);color:var(--navy)}
+body{max-width:860px;padding-bottom:105px}
+header{padding:14px 20px;background:rgba(248,251,252,.96);border-bottom:1px solid #dae4e9;box-shadow:0 2px 18px rgba(12,27,51,.04)}
+header .t{font-size:22px;letter-spacing:-.05em}
+header .t small{letter-spacing:.07em;color:#60849a}
+.brand-mark{width:42px;height:42px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(140deg,#142741,#345574);color:#7bffe0;box-shadow:0 6px 16px rgba(12,27,51,.18);font-size:22px;font-weight:900}
+main{padding:20px;gap:16px}
+.card{border-radius:23px;border-color:#e1e9ef;padding:19px;box-shadow:0 10px 32px rgba(29,57,88,.045)}
+.card.hero{background:linear-gradient(135deg,#1b3958 0%,#0c1a35 85%)}
+.card h2{font-size:12px;letter-spacing:.09em}
+.btn{background:#1f3b58;border-radius:12px}
+.btn.g{background:#58e3c6;color:#0d283c}
+.btn:focus-visible,nav button:focus-visible{outline:3px solid #42cdae;outline-offset:2px}
+input:focus,select:focus{outline:2px solid #36bba6;border-color:#36bba6}
+nav{box-shadow:0 -5px 24px rgba(12,27,51,.06);background:#fcfefe}
+nav div{max-width:860px;overflow-x:auto;scrollbar-width:none;justify-content:space-around}
+nav div::-webkit-scrollbar{display:none}
+nav button{min-width:80px;flex:1 0 auto;padding:13px 10px;color:#657990;font-size:12px;white-space:nowrap}
+nav button.on{color:#087b6e;box-shadow:inset 0 3px 0 #3bd4b2;background:#effdf9}
+.splash-title{font-size:28px;letter-spacing:-.06em;font-weight:900;margin:0 0 3px}
+.splash-caption{font-size:14px;color:var(--muted);margin:0 0 16px}
+.eyebrow{font-weight:900;font-size:11px;text-transform:uppercase;letter-spacing:.13em;color:#91b2c1;margin-bottom:9px}
+.hero-amount{font-size:36px;font-weight:950;letter-spacing:-.05em;line-height:1.12;margin:10px 0}
+.hero-bottom{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;position:relative;z-index:1}
+.hero-bottom span{color:#c2d9e6;font-size:12px}
+.progress{height:8px;border-radius:100px;background:rgba(255,255,255,.17);overflow:hidden;margin:14px 0 8px}
+.progress i{display:block;height:100%;border-radius:100px;background:#62ebc6}
+.statgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px;min-width:0}
+.stat .icon{display:flex;width:34px;height:34px;align-items:center;justify-content:center;border-radius:11px;background:#eafaf5;font-size:17px}
+.stat strong{display:block;font-size:23px;margin-top:13px;letter-spacing:-.04em;overflow-wrap:anywhere}
+.stat span{font-size:12px;color:var(--muted);display:block;margin-top:3px}
+.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.quick{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;padding:15px 5px;border-radius:16px;background:#edf5f8;border:1px solid #dce8ec;font-size:12px;font-weight:800;color:#274763;cursor:pointer}
+.quick b{font-size:23px}
+.split-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.split-head h2{margin:0}
+.link{border:0;background:transparent;color:#087965;font-weight:800;cursor:pointer;padding:6px;font-size:12px}
+.meal-day{margin-bottom:12px;border:1px solid #e5ebf0;background:#fbfdfe;border-radius:18px;padding:14px}
+.meal-day.today{border-color:#75d9c5;background:#f1fffa}
+.meal-day-title{display:flex;justify-content:space-between;align-items:center;font-weight:900;margin-bottom:9px}
+.meal-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.meal-row:first-of-type{border:0}
+.meal-row .n{flex:1;min-width:0}
+.meal-row .n small{display:block;color:#638194;margin-top:4px}
+.tiny{font-size:11px;background:#e4faf4;color:#187664;border-radius:90px;padding:5px 9px;font-weight:800}
+@media(max-width:420px){main{padding:12px}.card{padding:15px}.hero-amount{font-size:31px}.quick-grid{gap:6px}.quick{padding:12px 4px;font-size:11px}nav button{min-width:76px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand-mark" aria-hidden="true">⌂</div>
+  <div class="t">Casa+<small>MEU LAR ORGANIZADO</small></div>
+  <div class="sp"></div>
+  <span id="admBox"></span>
+</header>
+<main id="view"><div class="empty">Carregando…</div></main>
+<footer>Casa+ • Compras, finanças e organização do lar</footer>
+<nav><div id="nav"></div></nav>
+<div id="modal"><div class="box" id="mbox"></div></div>
+
+<script>
+const $ = s => document.querySelector(s);
+let S = null, lastJson = '';
+let me = localStorage.getItem('casa_me') || '';
+let token = sessionStorage.getItem('casa_adm') || '';
+let tab = 'inicio', period = 'mes';
+const TABS = [['inicio','Início'],['semana','Escala'],['lista','Compras'],['gastos','Finanças'],['cardapio','Cardápio'],['pessoas','Pessoas']];
+const AVC = [['#0B1D4D','#fff'],['#9BC53D','#0B1D4D'],['#3C508F','#fff'],['#8FA6E0','#0B1D4D'],['#5E8A12','#fff'],['#1F3A8A','#fff']];
+const KIND = {compra:['Compra','#183a56'],mercado:['Mercado','#248e77'],energia:['Energia','#d4a632'],agua:['Água','#5a9bdf'],internet:['Internet','#8c79d9'],aluguel:['Aluguel','#de7984'],gas:['Gás','#ea8842'],limpeza:['Limpeza','#52a690'],saude:['Saúde','#b870c3'],transporte:['Transporte','#6a9e4e'],manutencao:['Manutenção','#658caa'],outro:['Outro','#8FA6E0']};
+
+async function api(path, method, body) {
+  const r = await fetch('/api/' + path, {
+    method: method || 'GET',
+    headers: Object.assign({'Content-Type':'application/json'}, token ? {'X-Admin': token} : {}),
+    body: body ? JSON.stringify(body) : undefined
+  });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401 && token) { token = ''; sessionStorage.removeItem('casa_adm'); }
+  if (!r.ok) throw new Error(j.error || 'Algo deu errado.');
+  return j;
+}
+async function call(path, method, body) {
+  try { await api(path, method, body); await load(true); } catch (e) { alert(e.message); }
+}
+
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const gs = n => 'Gs ' + new Intl.NumberFormat('pt-BR').format(Math.round(n));
+const short = n => n >= 1e6 ? (n/1e6).toFixed(1).replace('.',',') + ' mi' : n >= 1e3 ? Math.round(n/1e3) + ' mil' : String(Math.round(n));
+const iso = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+const parse = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); };
+const br = d => String(d.getDate()).padStart(2,'0') + '/' + String(d.getMonth()+1).padStart(2,'0');
+function monday(d) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); const w = (x.getDay() + 6) % 7; x.setDate(x.getDate() - w); return x; }
+const activeMembers = () => S.members.filter(m => m.active).sort((a,b) => a.position - b.position);
+const nameOf = id => { const m = S.members.find(x => x.id === id); return m ? m.name : 'Alguém'; };
+const isLocal = ['127.0.0.1','localhost'].includes(location.hostname);
+
+function avatar(id, big) {
+  const m = S.members.find(x => x.id === id); if (!m) return '';
+  const [bg, fg] = AVC[(m.position - 1 + AVC.length * 10) % AVC.length];
+  const ini = m.name.trim().split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  return '<span class="av' + (big ? ' l' : '') + '" style="background:' + bg + ';color:' + fg + '">' + esc(ini) + '</span>';
+}
+
+function buyerFor(ws) {
+  const ppl = activeMembers();
+  const key = iso(ws);
+  if (S.overrides[key]) return {id: S.overrides[key], swapped: true};
+  if (!ppl.length || !S.settings.start_date) return null;
+  const start = monday(parse(S.settings.start_date));
+  const idx = Math.round((ws - start) / (7 * 864e5));
+  if (idx < 0) return {before: true, start};
+  return {id: ppl[((idx % ppl.length) + ppl.length) % ppl.length].id, swapped: false};
+}
+
+async function load(force) {
+  try {
+    const j = await api('state');
+    const txt = JSON.stringify(j);
+    if (txt === lastJson && !force) return;
+    const f = document.activeElement;
+    if (!force && f && (f.tagName === 'INPUT' || f.tagName === 'SELECT')) return;
+    lastJson = txt; S = j;
+    if (me && !S.members.some(m => String(m.id) === me && m.active)) { me = ''; localStorage.removeItem('casa_me'); }
+    render();
+  } catch (e) {
+    $('#view').innerHTML = '<div class="card"><b>Sem conexão com o servidor da casa.</b><div class="mut">Confira se está no mesmo Wi-Fi e se o Casa+ está ligado no celular do administrador.</div></div>';
+  }
+}
+
+function renderHeader() {
+  $('#admBox').innerHTML = token
+    ? '<span class="pill">Administrador</span> <button class="btn o s" onclick="logout()">Sair</button>'
+    : '<button class="btn o s" onclick="openLogin()">Administrador</button>';
+  $('#nav').innerHTML = TABS.map(([k,l]) => '<button class="' + (tab===k?'on':'') + '" onclick="go(\'' + k + '\')">' + l + '</button>').join('');
+}
+function go(t) { tab = t; lastJson = ''; render(); window.scrollTo(0,0); }
+function render() { renderHeader(); $('#view').innerHTML = ({inicio, semana, lista, gastos, cardapio, pessoas}[tab])(); }
+
+function whoSelect() {
+  const ppl = activeMembers();
+  if (!ppl.length) return '';
+  return '<div class="card"><h2>Quem é você?</h2><select onchange="setMe(this.value)"><option value="">Escolha seu nome</option>' +
+    ppl.map(m => '<option value="' + m.id + '"' + (String(m.id) === me ? ' selected' : '') + '>' + esc(m.name) + '</option>').join('') + '</select>' +
+    (me ? '' : '<div class="mut" style="margin-top:6px">Assim o app sabe quem marcou a compra.</div>') + '</div>';
+}
+function setMe(v) { me = v; if (v) localStorage.setItem('casa_me', v); else localStorage.removeItem('casa_me'); }
+
+
+function inicio() {
+  const today = new Date(), month = S.today.slice(0,7);
+  const entries = S.expenses.filter(e => e.date.startsWith(month));
+  const total = entries.reduce((n,e)=>n+e.amount,0);
+  const goal = Number(S.settings.monthly_goal || 0);
+  const pending = S.items.filter(i=>!i.bought);
+  const bought = S.items.filter(i=>i.bought).length;
+  const meals = S.menu || [];
+  const ws = monday(today), buyer = buyerFor(ws);
+  const buyerName = buyer && buyer.id ? nameOf(buyer.id) : 'A definir';
+  const day = (today.getDay()+6)%7;
+  const todayMeals = meals.filter(m=>m.day===day);
+  const mealNames={cafe:'Café da manhã',almoco:'Almoço',lanche:'Lanche',jantar:'Jantar'};
+  const progress = goal > 0 ? Math.min(100,Math.round(total*100/goal)) : 0;
+  let h = '<section><div class="eyebrow">Seu espaço, sua rotina</div><h1 class="splash-title">Visão geral da casa</h1><p class="splash-caption">Tudo o que importa, num só lugar.</p></section>';
+  h += '<div class="card hero"><div class="eyebrow">Despesas deste mês</div><div class="hero-amount">'+gs(total)+'</div><div class="hero-bottom"><span>'+(goal>0?'Orçamento: '+gs(goal):'Defina uma meta em Pessoas')+'</span><span>'+entries.length+' lançamento(s)</span></div>'+(goal>0?'<div class="progress"><i style="width:'+progress+'%"></i></div><div class="hero-bottom"><span>'+(total<=goal?'Disponível: '+gs(goal-total):'Acima da meta: '+gs(total-goal))+'</span><span>'+Math.round(total*100/goal)+'% utilizado</span></div>':'')+'</div>';
+  h += '<div class="statgrid">'+
+    '<div class="stat"><div class="icon">🛒</div><strong>'+pending.length+'</strong><span>Produtos para comprar</span></div>'+
+    '<div class="stat"><div class="icon">✓</div><strong>'+bought+'</strong><span>Itens já comprados</span></div>'+
+    '<div class="stat"><div class="icon">👥</div><strong>'+activeMembers().length+'</strong><span>Participantes da casa</span></div>'+
+    '<div class="stat"><div class="icon">🍽️</div><strong>'+meals.length+'</strong><span>Refeições planejadas</span></div></div>';
+  h += '<div class="card"><div class="split-head"><h2>Acesso rápido</h2></div><div class="quick-grid">'+
+    '<button class="quick" onclick="go(\'lista\')"><b>🛍️</b>Compras</button>'+
+    '<button class="quick" onclick="go(\'gastos\')"><b>📊</b>Finanças</button>'+
+    '<button class="quick" onclick="go(\'cardapio\')"><b>🍴</b>Cardápio</button></div></div>';
+  h += '<div class="card"><div class="split-head"><h2>Quem compra nesta semana?</h2><button class="link" onclick="go(\'semana\')">Ver escala →</button></div><div style="font-weight:900;font-size:23px">'+esc(buyerName)+'</div><div class="mut">Semana de '+br(ws)+'.</div></div>';
+  h += '<div class="card"><div class="split-head"><h2>Lista de compras</h2><button class="link" onclick="go(\'lista\')">Ver tudo →</button></div>';
+  h += pending.length?pending.slice(0,5).map(i=>'<div class="row"><div class="n"><b>'+esc(i.name)+'</b>'+(i.qty?'<span class="chip">'+esc(i.qty)+'</span>':'')+'</div><span class="tiny">Pendente</span></div>').join(''):'<div class="empty">Lista em dia! Adicione o que estiver faltando.</div>';
+  h += '</div><div class="card"><div class="split-head"><h2>Cardápio de hoje</h2><button class="link" onclick="go(\'cardapio\')">Planejar →</button></div>';
+  h += todayMeals.length?todayMeals.map(m=>'<div class="row"><div class="n"><b>'+esc(m.dish)+'</b><span class="chip">'+esc(mealNames[m.meal]||m.meal)+'</span></div></div>').join(''):'<div class="empty">Ainda não há refeições planejadas para hoje.</div>';
+  h += '</div>';
+  if(entries.length){h += '<div class="card"><div class="split-head"><h2>Últimos gastos</h2><button class="link" onclick="go(\'gastos\')">Detalhes →</button></div>'+
+    entries.slice(0,4).map(e=>'<div class="row"><div class="n"><b>'+esc(e.note||KIND[e.kind]?.[0]||'Despesa')+'</b><span class="chip">'+esc(e.date)+'</span></div><strong>'+gs(e.amount)+'</strong></div>').join('')+'</div>';}
+  return h;
+}
+
+// ---------------- Semana ----------------
+
+function semana() {
+  const ppl = activeMembers();
+  if (!ppl.length) {
+    return '<div class="card hero"><h2>Bem-vindo</h2><div class="big">Casa+</div><p class="mut">Ainda não há pessoas cadastradas.' +
+      (token ? ' Vá na aba <b>Pessoas</b> e cadastre quem participa da cota.' : ' O administrador precisa cadastrar quem participa da cota.') + '</p></div>' +
+      (token ? '' : '<div class="card"><div class="mut">Sou o administrador: toque em <b>Administrador</b> no topo' + (isLocal ? '' : ' (no celular dele)') + '.</div></div>');
+  }
+  const ws = monday(new Date());
+  const b = buyerFor(ws);
+  let h = '<div class="card hero"><h2>Quem compra esta semana</h2>';
+  if (!S.settings.start_date && !S.overrides[iso(ws)]) {
+    h += '<div class="big">—</div><p class="mut">' + (token ? 'Defina a data de início da escala na aba Pessoas.' : 'O administrador ainda não definiu a escala.') + '</p>';
+  } else if (b && b.before) {
+    h += '<div class="big">Começa em ' + br(b.start) + '</div><p class="mut">A escala ainda não começou.</p>';
+  } else if (b) {
+    const end = new Date(ws); end.setDate(end.getDate() + 6);
+    const left = Math.max(0, Math.round((end - new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())) / 864e5)) ;
+    h += '<div class="heroRow">' + avatar(b.id, true) + '<div class="grow"><div class="big">' + esc(nameOf(b.id)) + '</div>' +
+         '<p class="mut" style="margin:6px 0 0">' + br(ws) + ' a ' + br(end) + ' • ' + (left === 0 ? 'último dia da semana' : left + (left === 1 ? ' dia' : ' dias') + ' até trocar') + (b.swapped ? ' • trocado pelo administrador' : '') + '</p></div></div>';
+    if (me && String(b.id) === me) h += '<div style="margin-top:12px;position:relative;z-index:1"><span class="pill">É a sua vez</span></div>';
+  }
+  if (token) {
+    h += '<div style="margin-top:12px;position:relative;z-index:1"><select onchange="swap(this.value)"><option value="">Trocar quem compra esta semana…</option>' +
+      ppl.map(m => '<option value="' + m.id + '">' + esc(m.name) + '</option>').join('') + '<option value="auto">Voltar para a escala normal</option></select></div>';
+  }
+  h += '</div>';
+
+  if (S.settings.start_date) {
+    h += '<div class="card"><h2>Próximas semanas</h2>';
+    for (let i = 1; i <= 6; i++) {
+      const w = new Date(ws); w.setDate(w.getDate() + 7 * i);
+      const bb = buyerFor(w);
+      if (bb && bb.id) h += '<div class="row">' + avatar(bb.id) + '<div class="n"><b>' + esc(nameOf(bb.id)) + '</b></div><span class="mut">' + br(w) + '</span></div>';
+    }
+    h += '</div>';
+  }
+  const falta = S.items.filter(i => !i.bought).length;
+  const mes = S.expenses.filter(e => e.date.startsWith(S.today.slice(0,7))).reduce((a,e) => a + e.amount, 0);
+  h += '<div class="card"><h2>Resumo</h2><div class="row"><div class="n">Itens que faltam</div><b>' + falta + '</b></div>' +
+       '<div class="row"><div class="n">Gasto neste mês</div><b>' + gs(mes) + '</b></div></div>';
+  return whoSelect() + h;
+}
+function swap(v) {
+  if (!v) return;
+  call('overrides', 'POST', {week_start: iso(monday(new Date())), member_id: v === 'auto' ? null : Number(v)});
+}
+
+// ---------------- Lista ----------------
+function lista() {
+  const falta = S.items.filter(i => !i.bought);
+  const feitos = S.items.filter(i => i.bought).slice(0, 15);
+  let h = whoSelect();
+  h += '<div class="card"><h2>Adicionar o que falta</h2><div class="f"><div class="f2"><input id="iname" placeholder="Ex.: arroz, óleo, sabão" maxlength="60"><input id="iqty" placeholder="Qtde" maxlength="20"></div>' +
+       '<button class="btn g" onclick="addItem()">Adicionar à lista</button></div></div>';
+  h += '<div class="card"><h2>Falta comprar (' + falta.length + ')</h2>';
+  if (!falta.length) h += '<div class="empty">Nada na lista por enquanto.</div>';
+  falta.forEach(i => {
+    h += '<div class="row"><div class="n"><b>' + esc(i.name) + '</b><span class="chip">' + (i.qty ? esc(i.qty) + ' • ' : '') + (i.added_by ? 'pedido por ' + esc(nameOf(i.added_by)) : '') + '</span></div>' +
+         '<button class="btn g s" onclick="bought(' + i.id + ',true)">Comprado</button>' +
+         (token ? '<button class="btn r s" onclick="delItem(' + i.id + ')">Apagar</button>' : '') + '</div>';
+  });
+  h += '</div>';
+  if (feitos.length) {
+    h += '<div class="card"><h2>Comprados recentemente</h2>';
+    feitos.forEach(i => {
+      h += '<div class="row"><div class="n"><b style="text-decoration:line-through;color:var(--muted)">' + esc(i.name) + '</b><span class="chip">' + (i.bought_by ? 'por ' + esc(nameOf(i.bought_by)) : '') + '</span></div>' +
+           '<button class="btn o s" onclick="bought(' + i.id + ',false)">Desfazer</button></div>';
+    });
+    h += '</div>';
+  }
+  return h;
+}
+function addItem() {
+  const name = $('#iname').value.trim();
+  if (!name) { alert('Digite o nome do item.'); return; }
+  call('items', 'POST', {name, qty: $('#iqty').value.trim(), by: me ? Number(me) : null});
+}
+function bought(id, v) { call('items/' + id + '/bought', 'POST', {by: me ? Number(me) : null, bought: v}); }
+function delItem(id) { if (confirm('Apagar este item?')) call('items/' + id, 'DELETE'); }
+
+// ---------------- Gastos ----------------
+function ringSvg(p) {
+  const r = 44, c = 2 * Math.PI * r, f = Math.min(p, 1);
+  const col = p > 1 ? '#FF6B7F' : '#9BC53D';
+  return '<div class="ring"><svg width="104" height="104" viewBox="0 0 104 104"><circle cx="52" cy="52" r="' + r + '" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="10"/>' +
+    '<circle cx="52" cy="52" r="' + r + '" fill="none" stroke="' + col + '" stroke-width="10" stroke-linecap="round" stroke-dasharray="' + (c * f).toFixed(1) + ' ' + c.toFixed(1) + '" transform="rotate(-90 52 52)"/></svg>' +
+    '<div><b>' + Math.round(p * 100) + '%</b><small>DA META</small></div></div>';
+}
+
+function gastos() {
+  const ppl = activeMembers();
+  const ym = S.today.slice(0,7);
+  const list = S.expenses.filter(e => period === 'tudo' || e.date.startsWith(ym));
+  const total = list.reduce((a,e) => a + e.amount, 0);
+  const ids = new Set(ppl.map(m => m.id)); list.forEach(e => ids.add(e.member_id));
+  const parts = [...ids];
+  const share = parts.length ? total / parts.length : 0;
+  const paid = {}; parts.forEach(id => paid[id] = 0); list.forEach(e => paid[e.member_id] += e.amount);
+  const goal = Number(S.settings.monthly_goal || 0);
+
+  let h = whoSelect();
+  h += '<div class="tg"><button class="btn ' + (period==='mes'?'':'o') + '" onclick="setPeriod(\'mes\')">Este mês</button><button class="btn ' + (period==='tudo'?'':'o') + '" onclick="setPeriod(\'tudo\')">Tudo</button></div>';
+
+  h += '<div class="card hero"><div class="heroRow"><div class="grow"><h2>Total ' + (period==='mes' ? 'do mês' : 'registrado') + '</h2><div class="big">' + gs(total) + '</div>' +
+       '<p class="mut" style="margin:8px 0 0">' + (parts.length ? 'Cota por pessoa: ' + gs(share) + ' (' + parts.length + ' pessoas)' : 'Cadastre as pessoas para calcular a cota.') + '</p>' +
+       (period === 'mes' && goal > 0 ? '<p class="mut" style="margin:4px 0 0">Meta do mês: ' + gs(goal) + '</p>' : '') +
+       (period === 'mes' && goal <= 0 && token ? '<p class="mut" style="margin:4px 0 0">Defina a meta do mês na aba Pessoas.</p>' : '') + '</div>' +
+       (period === 'mes' && goal > 0 ? ringSvg(total / goal) : '') + '</div></div>';
+
+  h += '<div class="card"><h2>Registrar gasto</h2><div class="f">' +
+       '<select id="emem"><option value="">Quem pagou?</option>' + ppl.map(m => '<option value="' + m.id + '"' + (String(m.id)===me?' selected':'') + '>' + esc(m.name) + '</option>').join('') + '</select>' +
+       '<div class="f2"><input id="eval" inputmode="numeric" placeholder="Valor em Gs"><select id="ekind">'+Object.entries(KIND).map(([k,v])=>'<option value="'+k+'">'+v[0]+'</option>').join('')+'</select></div>' +
+       '<input id="enote" placeholder="Anotação (opcional)" maxlength="80">' +
+       '<button class="btn g" onclick="addExp()">Salvar gasto</button></div></div>';
+
+  if (total > 0) {
+    const bykind = Object.fromEntries(Object.keys(KIND).map(k=>[k,0])); list.forEach(e => bykind[e.kind] = (bykind[e.kind] || 0) + e.amount);
+    h += '<div class="card"><h2>Gastos por tipo</h2><div class="stack">' +
+      Object.keys(bykind).filter(k => bykind[k] > 0).map(k => '<i style="flex:' + bykind[k] + ';background:' + KIND[k][1] + '"></i>').join('') + '</div><div class="legend">' +
+      Object.keys(bykind).filter(k => bykind[k] > 0).map(k => '<span><span class="dot" style="background:' + KIND[k][1] + '"></span>' + KIND[k][0] + ' <b>' + Math.round(bykind[k] * 100 / total) + '%</b> • ' + gs(bykind[k]) + '</span>').join('') + '</div></div>';
+  }
+
+  // gráfico das últimas 6 semanas
+  const w0 = monday(new Date());
+  const weeks = [];
+  for (let i = 5; i >= 0; i--) { const s = new Date(w0); s.setDate(s.getDate() - 7 * i); const e = new Date(s); e.setDate(e.getDate() + 6); weeks.push({s, v: 0, key: [iso(s), iso(e)]}); }
+  S.expenses.forEach(e => weeks.forEach(w => { if (e.date >= w.key[0] && e.date <= w.key[1]) w.v += e.amount; }));
+  const mx = Math.max(...weeks.map(w => w.v));
+  h += '<div class="card"><h2>Gasto por semana</h2>';
+  if (mx <= 0) h += '<div class="empty">Ainda não há gastos nas últimas 6 semanas.</div>';
+  else h += '<div class="bars">' + weeks.map((w, i) => '<div class="b' + (i === 5 ? ' now' : '') + '">' + (w.v > 0 ? '<em>' + short(w.v) + '</em>' : '') + '<i style="height:' + Math.max(2, Math.round(w.v * 100 / mx)) + '%"></i><span>' + br(w.s) + '</span></div>').join('') + '</div>';
+  h += '</div>';
+
+  if (parts.length && total > 0) {
+    const bals = parts.map(id => paid[id] - share); const ma = Math.max(1, ...bals.map(Math.abs));
+    h += '<div class="card"><h2>Quem recebe e quem deve</h2>';
+    parts.forEach((id, i) => {
+      const bal = bals[i], w = Math.round(Math.abs(bal) * 50 / ma);
+      h += '<div class="row">' + avatar(id) + '<div class="n"><b>' + esc(nameOf(id)) + '</b><span class="chip">pagou ' + gs(paid[id]) + '</span>' +
+           '<div class="bal"><i style="' + (bal >= 0 ? 'left:50%;width:' + w + '%;background:var(--green)' : 'right:50%;width:' + w + '%;background:var(--red)') + '"></i></div></div>' +
+           '<span class="' + (bal >= 0 ? 'pos' : 'neg') + '">' + (bal >= 0 ? 'recebe ' : 'deve ') + gs(Math.abs(bal)) + '</span></div>';
+    });
+    h += '<div class="mut" style="margin-top:8px">Calculado só com os gastos registrados, divididos igualmente.</div></div>';
+  }
+
+  h += '<div class="card"><h2>Gastos registrados</h2>';
+  if (!list.length) h += '<div class="empty">Nenhum gasto registrado' + (period==='mes' ? ' neste mês' : '') + '.</div>';
+  list.slice(0, 60).forEach(e => {
+    const d = parse(e.date);
+    h += '<div class="row">' + avatar(e.member_id) + '<div class="n"><b>' + gs(e.amount) + '</b><span class="chip">' + esc(nameOf(e.member_id)) + ' • ' + KIND[e.kind][0] + ' • ' + br(d) + (e.note ? ' • ' + esc(e.note) : '') + '</span></div>' +
+         (token ? '<button class="btn r s" onclick="delExp(' + e.id + ')">Apagar</button>' : '') + '</div>';
+  });
+  return h + '</div>';
+}
+function setPeriod(p) { period = p; lastJson = ''; render(); }
+function addExp() {
+  const mem = $('#emem').value, val = Number($('#eval').value.replace(/\D/g, ''));
+  if (!mem) { alert('Escolha quem pagou.'); return; }
+  if (!val) { alert('Digite o valor.'); return; }
+  call('expenses', 'POST', {member_id: Number(mem), amount: val, kind: $('#ekind').value, note: $('#enote').value.trim(), date: S.today});
+}
+function delExp(id) { if (confirm('Apagar este gasto?')) call('expenses/' + id, 'DELETE'); }
+
+
+const MEAL_TYPES = [['cafe','Café da manhã'],['almoco','Almoço'],['lanche','Lanche'],['jantar','Jantar']];
+const WEEK_DAYS = ['Segunda-feira','Terça-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sábado','Domingo'];
+function cardapio() {
+  const meals = S.menu || [], today = (new Date().getDay()+6)%7;
+  let h = '<section><div class="eyebrow">Planejamento semanal</div><h1 class="splash-title">Cardápio da casa</h1><p class="splash-caption">Organize as refeições e prepare sua lista de compras.</p></section>';
+  if(token) {
+    h += '<div class="card" id="meal-editor"><h2>Planejar refeição</h2><div class="f"><div class="f2"><select id="mday">'+WEEK_DAYS.map((d,i)=>'<option value="'+i+'"'+(i===today?' selected':'')+'>'+d+'</option>').join('')+'</select>'+
+    '<select id="mtype">'+MEAL_TYPES.map(([k,n])=>'<option value="'+k+'">'+n+'</option>').join('')+'</select></div>'+
+    '<input id="mdish" placeholder="Ex.: arroz, feijão e frango" maxlength="100">'+
+    '<input id="mnote" placeholder="Ingredientes separados por vírgulas (opcional)" maxlength="180">'+
+    '<button class="btn g" onclick="saveMeal()">Salvar no cardápio</button></div></div>';
+  } else {
+    h += '<div class="card"><div class="mut">O administrador pode editar as refeições. Você pode consultar o cardápio e sugerir compras.</div></div>';
+  }
+  WEEK_DAYS.forEach((day,di)=>{
+    const ms=meals.filter(m=>m.day===di);
+    h+='<div class="meal-day'+(di===today?' today':'')+'"><div class="meal-day-title"><span>'+day+'</span>'+(di===today?'<span class="tiny">Hoje</span>':'')+'</div>';
+    if(!ms.length) h+='<div class="mut">Nenhuma refeição planejada.</div>';
+    MEAL_TYPES.forEach(([k,label])=>{
+      const m=ms.find(x=>x.meal===k);if(!m)return;
+      h+='<div class="meal-row"><div class="n"><small>'+label+'</small><b>'+esc(m.dish)+'</b>'+(m.note?'<small>Ingredientes: '+esc(m.note)+'</small>':'')+'</div>';
+      if(token)h+='<button class="btn o s" onclick="editMeal('+di+',\''+k+'\')">Editar</button><button class="btn r s" onclick="deleteMeal('+di+',\''+k+'\')">×</button>';
+      h+='</div>';
+      if(m.note) h+='<div style="text-align:right"><button class="link" onclick="addMealIngredients('+di+',\''+k+'\')">+ Ingredientes na lista</button></div>';
+    });
+    h+='</div>';
+  });
+  return h;
+}
+function editMeal(day,meal){
+  const m=(S.menu||[]).find(x=>x.day===day&&x.meal===meal);
+  if(!m||!token)return;
+  $('#mday').value=String(day);$('#mtype').value=meal;$('#mdish').value=m.dish;$('#mnote').value=m.note||'';
+  $('#meal-editor').scrollIntoView({behavior:'smooth',block:'start'});
+}
+function saveMeal(){
+  const dish=$('#mdish').value.trim();
+  if(!dish){alert('Informe o prato.');return;}
+  call('menu','POST',{day:Number($('#mday').value),meal:$('#mtype').value,dish,note:$('#mnote').value.trim()});
+}
+function deleteMeal(day,meal){
+  if(confirm('Apagar esta refeição do cardápio?'))call('menu?day='+day+'&meal='+encodeURIComponent(meal),'DELETE');
+}
+async function addMealIngredients(day,meal){
+  const m=(S.menu||[]).find(x=>x.day===day&&x.meal===meal);
+  if(!m||!m.note)return;
+  const names=[...new Set(m.note.split(/[,;\n]+/).map(x=>x.trim()).filter(Boolean))].slice(0,12);
+  const pending=new Set(S.items.filter(x=>!x.bought).map(x=>x.name.toLowerCase()));
+  const fresh=names.filter(x=>!pending.has(x.toLowerCase()));
+  if(!fresh.length){alert('Os ingredientes já estão na lista de compras.');return;}
+  if(!confirm('Adicionar '+fresh.length+' ingrediente(s) à lista de compras?'))return;
+  try{
+    for(const name of fresh) await api('items','POST',{name,qty:'',by:me?Number(me):null});
+    await load(true);
+    alert('Ingredientes adicionados à lista de compras.');
+  }catch(e){alert(e.message);}
+}
+
+// ---------------- Pessoas ----------------
+
+function pessoas() {
+  const ppl = activeMembers();
+  let h = '<div class="card"><h2>Pessoas da cota</h2>';
+  if (!ppl.length) h += '<div class="empty">Ninguém cadastrado ainda.</div>';
+  ppl.forEach((m, i) => {
+    h += '<div class="row">' + avatar(m.id) + '<div class="n"><b>' + (i+1) + '. ' + esc(m.name) + '</b></div>' +
+         (token ? '<button class="btn o s" onclick="move(' + i + ',-1)">↑</button><button class="btn o s" onclick="move(' + i + ',1)">↓</button><button class="btn r s" onclick="delMember(' + m.id + ')">Remover</button>' : '') + '</div>';
+  });
+  h += '</div>';
+  if (token) {
+    h += '<div class="card"><h2>Cadastrar pessoa</h2><div class="f"><input id="mname" placeholder="Nome" maxlength="40"><button class="btn g" onclick="addMember()">Adicionar</button></div></div>';
+    h += '<div class="card"><h2>Escala semanal</h2><div class="mut" style="margin-bottom:8px">A ordem acima define quem compra em cada semana. Escolha a segunda-feira em que a escala começa.</div>' +
+         '<div class="f"><input id="sdate" type="date" value="' + esc(S.settings.start_date || '') + '"><button class="btn" onclick="saveStart()">Salvar data de início</button></div></div>';
+    h += '<div class="card"><h2>Meta de gasto do mês</h2><div class="mut" style="margin-bottom:8px">Opcional. Com a meta, a aba Gastos mostra quanto já foi usado. Deixe 0 para não usar.</div>' +
+         '<div class="f"><input id="goal" inputmode="numeric" placeholder="Valor em Gs" value="' + esc(S.settings.monthly_goal && S.settings.monthly_goal !== '0' ? new Intl.NumberFormat('pt-BR').format(Number(S.settings.monthly_goal)) : '') + '"><button class="btn" onclick="saveGoal()">Salvar meta</button></div></div>';
+  } else {
+    h += '<div class="card"><div class="mut">Só o administrador cadastra pessoas e define a escala.</div></div>';
+  }
+  return h;
+}
+function addMember() { const n = $('#mname').value.trim(); if (!n) { alert('Digite o nome.'); return; } call('members', 'POST', {name: n}); }
+function delMember(id) { if (confirm('Remover esta pessoa da cota? Os gastos dela continuam registrados.')) call('members/' + id, 'DELETE'); }
+function move(i, d) {
+  const ids = activeMembers().map(m => m.id); const j = i + d;
+  if (j < 0 || j >= ids.length) return;
+  [ids[i], ids[j]] = [ids[j], ids[i]];
+  call('members/reorder', 'POST', {ids});
+}
+function saveStart() { const v = $('#sdate').value; if (!v) { alert('Escolha a data.'); return; } call('settings', 'POST', {start_date: iso(monday(parse(v)))}); }
+function saveGoal() { call('settings', 'POST', {monthly_goal: Number(($('#goal').value || '0').replace(/\D/g, '')) || 0}); }
+
+// ---------------- Administrador ----------------
+function openLogin() {
+  const first = !S.pinSet;
+  const box = $('#mbox');
+  if (first && !isLocal) {
+    box.innerHTML = '<b>Administrador</b><div class="mut">O PIN ainda não foi criado. O administrador cria o PIN abrindo o Casa+ no próprio celular.</div><button class="btn o" onclick="closeModal()">Fechar</button>';
+  } else {
+    box.innerHTML = '<b>' + (first ? 'Criar PIN do administrador' : 'Entrar como administrador') + '</b>' +
+      '<div class="mut">' + (first ? 'Escolha de 4 a 8 números. Só você vai usar.' : 'Digite o seu PIN.') + '</div>' +
+      '<input id="pin" type="password" inputmode="numeric" maxlength="8" placeholder="PIN" autocomplete="off">' +
+      (first ? '<input id="pin2" type="password" inputmode="numeric" maxlength="8" placeholder="Repita o PIN" autocomplete="off">' : '') +
+      '<div class="err" id="perr"></div><button class="btn g" onclick="doLogin(' + first + ')">' + (first ? 'Criar PIN' : 'Entrar') + '</button><button class="btn o" onclick="closeModal()">Cancelar</button>';
+  }
+  $('#modal').style.display = 'flex';
+}
+function closeModal() { $('#modal').style.display = 'none'; }
+async function doLogin(first) {
+  const pin = $('#pin').value.replace(/\D/g, '');
+  const err = $('#perr');
+  if (pin.length < 4) { err.textContent = 'Use de 4 a 8 números.'; return; }
+  if (first && pin !== $('#pin2').value.replace(/\D/g, '')) { err.textContent = 'Os PINs não são iguais.'; return; }
+  try {
+    const r = await api(first ? 'setup' : 'login', 'POST', {pin});
+    token = r.token; sessionStorage.setItem('casa_adm', token);
+    closeModal(); await load(true);
+  } catch (e) { err.textContent = e.message; }
+}
+function logout() { token = ''; sessionStorage.removeItem('casa_adm'); lastJson = ''; render(); }
+
+load(true);
+setInterval(() => load(false), 4000);
+</script>
+</body>
+</html>

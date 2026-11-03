@@ -1,0 +1,48 @@
+name: Validar Casa+ renovado
+on:
+  push:
+    branches: [main, feat/casa-compras-despesas-20261103]
+    paths:
+      - 'source/**'
+      - '.github/workflows/build-source-casa.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validar JavaScript do painel
+        shell: bash
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('source/CasaConverta/app/src/main/assets/index.html','utf8');
+          const match = html.match(/<script>([\s\S]*?)<\/script>/);
+          if(!match) throw new Error('Script do painel não localizado');
+          new Function(match[1]);
+          if(!html.includes('function inicio()') || !html.includes('function cardapio()')) throw new Error('Telas esperadas ausentes');
+          console.log('JavaScript sintaticamente válido: painel e cardápio presentes');
+          NODE
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+      - name: Compilar APK Android
+        shell: bash
+        run: |
+          cd source/CasaConverta
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          gradle :app:assembleDebug --no-daemon --max-workers=2 --stacktrace
+      - name: Publicar APK de teste
+        uses: actions/upload-artifact@v4
+        with:
+          name: Casa-Plus-Painel-2026-APK
+          path: source/CasaConverta/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 30
