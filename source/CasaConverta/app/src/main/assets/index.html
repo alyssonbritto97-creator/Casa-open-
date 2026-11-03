@@ -124,6 +124,20 @@ nav button.on{color:#087b6e;box-shadow:inset 0 3px 0 #3bd4b2;background:#effdf9}
 .meal-row .n small{display:block;color:#638194;margin-top:4px}
 .tiny{font-size:11px;background:#e4faf4;color:#187664;border-radius:90px;padding:5px 9px;font-weight:800}
 @media(max-width:420px){main{padding:12px}.card{padding:15px}.hero-amount{font-size:31px}.quick-grid{gap:6px}.quick{padding:12px 4px;font-size:11px}nav button{min-width:76px}}
+
+.sync-tag{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:6px 9px;font-weight:800;font-size:11px;background:#e8f9f3;color:#116f5d;white-space:nowrap;border:1px solid #cbebe1}
+.sync-tag::before{content:"";display:inline-block;width:7px;height:7px;background:#21b991;border-radius:50%}
+.sync-tag.offline{color:#9a3650;background:#fff0f3;border-color:#f7ccd6}
+.sync-tag.offline::before{background:#dd506f}
+.sync-tag.wait{color:#98671c;background:#fff7e9;border-color:#f6dfad;cursor:pointer}
+.sync-tag.wait::before{background:#e4a43d}
+.collab-card{border:1px solid #e0eaf0;border-radius:18px;padding:14px;margin-top:10px;background:#fbfdff}
+.collab-heading{display:flex;align-items:center;gap:10px}.collab-heading .n{flex:1}
+.collab-row{display:flex;gap:7px;flex-wrap:wrap;padding-top:12px}
+.collab-row span{font-size:12px;background:#edf4f7;border-radius:20px;padding:6px 10px;color:#37536c}
+.collab-positive{font-size:12px;font-weight:800;color:#047d67}
+.collab-neutral{font-size:12px;font-weight:700;color:#6a8294}
+@media(max-width:410px){header{gap:8px;padding:10px}header .t{font-size:19px}header .t small{font-size:9px}.sync-tag{font-size:10px;padding:5px 7px}}
 </style>
 </head>
 <body>
@@ -131,6 +145,7 @@ nav button.on{color:#087b6e;box-shadow:inset 0 3px 0 #3bd4b2;background:#effdf9}
   <div class="brand-mark" aria-hidden="true">⌂</div>
   <div class="t">Casa+<small>MEU LAR ORGANIZADO</small></div>
   <div class="sp"></div>
+  <span id="syncBox" class="sync-tag" role="status" aria-live="polite">Conectando…</span>
   <span id="admBox"></span>
 </header>
 <main id="view"><div class="empty">Carregando…</div></main>
@@ -140,17 +155,18 @@ nav button.on{color:#087b6e;box-shadow:inset 0 3px 0 #3bd4b2;background:#effdf9}
 
 <script>
 const $ = s => document.querySelector(s);
-let S = null, lastJson = '';
+let S = null, lastJson = '', pendingState = null, loading = false, syncOnline = false, lastSyncAt = 0;
 let me = localStorage.getItem('casa_me') || '';
 let token = sessionStorage.getItem('casa_adm') || '';
 let tab = 'inicio', period = 'mes';
-const TABS = [['inicio','Início'],['semana','Escala'],['lista','Compras'],['gastos','Finanças'],['cardapio','Cardápio'],['pessoas','Pessoas']];
+const TABS = [['inicio','Início'],['semana','Escala'],['lista','Compras'],['gastos','Finanças'],['cardapio','Cardápio'],['colabora','Colaboração'],['pessoas','Pessoas']];
 const AVC = [['#0B1D4D','#fff'],['#9BC53D','#0B1D4D'],['#3C508F','#fff'],['#8FA6E0','#0B1D4D'],['#5E8A12','#fff'],['#1F3A8A','#fff']];
 const KIND = {compra:['Compra','#183a56'],mercado:['Mercado','#248e77'],energia:['Energia','#d4a632'],agua:['Água','#5a9bdf'],internet:['Internet','#8c79d9'],aluguel:['Aluguel','#de7984'],gas:['Gás','#ea8842'],limpeza:['Limpeza','#52a690'],saude:['Saúde','#b870c3'],transporte:['Transporte','#6a9e4e'],manutencao:['Manutenção','#658caa'],outro:['Outro','#8FA6E0']};
 
 async function api(path, method, body) {
   const r = await fetch('/api/' + path, {
     method: method || 'GET',
+    cache: 'no-store',
     headers: Object.assign({'Content-Type':'application/json'}, token ? {'X-Admin': token} : {}),
     body: body ? JSON.stringify(body) : undefined
   });
@@ -192,20 +208,59 @@ function buyerFor(ws) {
   return {id: ppl[((idx % ppl.length) + ppl.length) % ppl.length].id, swapped: false};
 }
 
-async function load(force) {
-  try {
-    const j = await api('state');
-    const txt = JSON.stringify(j);
-    if (txt === lastJson && !force) return;
-    const f = document.activeElement;
-    if (!force && f && (f.tagName === 'INPUT' || f.tagName === 'SELECT')) return;
-    lastJson = txt; S = j;
-    if (me && !S.members.some(m => String(m.id) === me && m.active)) { me = ''; localStorage.removeItem('casa_me'); }
-    render();
-  } catch (e) {
-    $('#view').innerHTML = '<div class="card"><b>Sem conexão com o servidor da casa.</b><div class="mut">Confira se está no mesmo Wi-Fi e se o Casa+ está ligado no celular do administrador.</div></div>';
+
+function updateSyncIndicator() {
+  const slot = $('#syncBox');
+  if (!slot) return;
+  if (!syncOnline) {
+    slot.className='sync-tag offline';
+    slot.textContent='Sem conexão';
+    slot.title='Verifique o Wi-Fi e mantenha o celular administrador ligado.';
+  } else if (pendingState) {
+    slot.className='sync-tag wait';
+    slot.textContent='Novidades · atualizar';
+    slot.title='Mudanças feitas por outro celular: toque para atualizar.';
+  } else {
+    slot.className='sync-tag';
+    slot.textContent='Sincronizado';
+    slot.title='Última atualização: ' + new Date(lastSyncAt).toLocaleTimeString('pt-BR');
   }
 }
+function hasFormFocus() {
+  const el=document.activeElement;
+  return !!(el && el.closest && el.closest('#view') && ['INPUT','SELECT','TEXTAREA'].includes(el.tagName));
+}
+function applyState(j,txt) {
+  S=j;lastJson=txt;pendingState=null;
+  if(me && !S.members.some(m=>String(m.id)===me && m.active)){
+    me='';localStorage.removeItem('casa_me');
+  }
+  render();
+}
+async function load(force) {
+  if(loading || (document.hidden && !force)) return;
+  loading=true;
+  try {
+    const j=await api('state');
+    const txt=JSON.stringify(j);
+    syncOnline=true;lastSyncAt=Date.now();
+    if(txt!==lastJson || force) {
+      if(!force && hasFormFocus())pendingState={j,txt};
+      else applyState(j,txt);
+    }
+    updateSyncIndicator();
+  } catch(e) {
+    syncOnline=false;updateSyncIndicator();
+    if(!S) $('#view').innerHTML='<div class="card"><b>Sem conexão com o servidor da casa.</b><div class="mut">Verifique se os celulares estão na mesma rede Wi-Fi e o administrador mantém o aplicativo ligado.</div></div>';
+  } finally {loading=false;}
+}
+document.addEventListener('focusout',()=>setTimeout(()=>{
+  if(pendingState && !hasFormFocus()){const p=pendingState;applyState(p.j,p.txt);updateSyncIndicator();}
+},500));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)load(false);});
+window.addEventListener('focus',()=>load(false));
+document.addEventListener('click',e=>{if(e.target && e.target.id==='syncBox')load(true);});
+
 
 function renderHeader() {
   $('#admBox').innerHTML = token
@@ -214,7 +269,7 @@ function renderHeader() {
   $('#nav').innerHTML = TABS.map(([k,l]) => '<button class="' + (tab===k?'on':'') + '" onclick="go(\'' + k + '\')">' + l + '</button>').join('');
 }
 function go(t) { tab = t; lastJson = ''; render(); window.scrollTo(0,0); }
-function render() { renderHeader(); $('#view').innerHTML = ({inicio, semana, lista, gastos, cardapio, pessoas}[tab])(); }
+function render() { renderHeader(); $('#view').innerHTML = ({inicio, semana, lista, gastos, cardapio, colabora, pessoas}[tab])(); }
 
 function whoSelect() {
   const ppl = activeMembers();
@@ -549,7 +604,7 @@ async function doLogin(first) {
 function logout() { token = ''; sessionStorage.removeItem('casa_adm'); lastJson = ''; render(); }
 
 load(true);
-setInterval(() => load(false), 4000);
+setInterval(() => load(false), 2500);
 </script>
 </body>
 </html>
