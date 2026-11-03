@@ -1,1 +1,51 @@
+name: Compilar Casa+
 
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "Z-Casa-Converta.zip"
+      - ".github/workflows/build-casa.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Descompactar fonte Android
+        shell: bash
+        run: |
+          mkdir -p _src
+          unzip -q Z-Casa-Converta.zip -d _src
+          test -f _src/CasaConverta/settings.gradle.kts
+          echo "PROJ=_src/CasaConverta" >> "$GITHUB_ENV"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.7"
+      - name: Compilar APK de testes
+        shell: bash
+        run: |
+          cd "$PROJ"
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          gradle :app:assembleDebug --no-daemon --max-workers=2 --stacktrace
+      - name: Preparar download
+        shell: bash
+        run: |
+          mkdir -p apk
+          cp "$PROJ/app/build/outputs/apk/debug/app-debug.apk" apk/Casa-Converta-debug.apk
+          test -s apk/Casa-Converta-debug.apk
+          ls -lh apk/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Casa-APK
+          path: apk/Casa-Converta-debug.apk
+          if-no-files-found: error
+          retention-days: 30
