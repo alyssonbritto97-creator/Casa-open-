@@ -281,6 +281,50 @@ function whoSelect() {
 function setMe(v) { me = v; if (v) localStorage.setItem('casa_me', v); else localStorage.removeItem('casa_me'); }
 
 
+
+function collaborationSummary() {
+  const start=monday(new Date());
+  const end=new Date(start);end.setDate(end.getDate()+7);
+  const from=iso(start), to=iso(end), fromMs=start.getTime(), toMs=end.getTime();
+  const stats=activeMembers().map(m=>({id:m.id,name:m.name,bought:0,paid:0,requests:0,records:0}));
+  const indexed=new Map(stats.map(x=>[x.id,x]));
+  (S.items||[]).forEach(i=>{
+    if(i.bought && i.bought_at>=fromMs && i.bought_at<toMs && indexed.has(i.bought_by))
+      indexed.get(i.bought_by).bought++;
+    if(i.created>=fromMs && i.created<toMs && indexed.has(i.added_by))
+      indexed.get(i.added_by).requests++;
+  });
+  (S.expenses||[]).forEach(e=>{
+    if(e.date>=from && e.date<to && indexed.has(e.member_id)){
+      indexed.get(e.member_id).paid+=Number(e.amount)||0;
+      indexed.get(e.member_id).records++;
+    }
+  });
+  return {start, stats, participated:stats.filter(x=>x.bought>0||x.records>0).length, participants:stats.length};
+}
+function colabora() {
+  const s=collaborationSummary();
+  const percent=s.participants?Math.round(100*s.participated/s.participants):0;
+  const buyer=buyerFor(s.start);
+  let h='<section><div class="eyebrow">Contribuições da semana</div><h1 class="splash-title">Todo mundo ajuda</h1><p class="splash-caption">Pequenas ações fazem a casa funcionar melhor.</p></section>';
+  h+='<div class="card hero"><h2>Participação registrada</h2><div class="hero-amount">'+s.participated+' de '+s.participants+' pessoas</div>'+
+    '<div class="progress"><i style="width:'+percent+'%"></i></div><div class="hero-bottom"><span>Semana de '+br(s.start)+'</span><span>'+percent+'% com registros</span></div></div>';
+  h+='<div class="card"><div class="split-head"><h2>Contribuição de cada pessoa</h2><button class="link" onclick="go(\'lista\')">Lista →</button></div>';
+  if(!s.stats.length)h+='<div class="empty">Cadastre as pessoas para acompanhar a colaboração.</div>';
+  s.stats.forEach(x=>{
+    const recorded=x.bought>0||x.records>0;
+    h+='<div class="collab-card"><div class="collab-heading">'+avatar(x.id)+
+      '<div class="n"><b>'+esc(x.name)+'</b><br><span class="collab-'+(recorded?'positive':'neutral')+'">'+
+      (recorded?'Participação registrada':'Sem compras ou despesas registradas')+
+      '</span></div>'+(buyer && buyer.id===x.id?'<span class="tiny">Na escala</span>':'')+'</div>'+
+      '<div class="collab-row"><span>🛒 '+x.bought+' item(ns) comprado(s)</span>'+
+      '<span>💰 '+x.records+' gasto(s): '+gs(x.paid)+'</span>'+
+      '<span>📝 '+x.requests+' pedido(s) na lista</span></div></div>';
+  });
+  h+='</div><div class="card"><h2>Meta da equipe</h2><div class="mut">Cada registro conta para a meta coletiva de participação. Compras registradas à noite também entram pela data e hora da compra. Esses números mostram somente lançamentos feitos no Casa+; não medem o esforço ou o valor de ninguém.</div></div>';
+  return h;
+}
+
 function inicio() {
   const today = new Date(), month = S.today.slice(0,7);
   const entries = S.expenses.filter(e => e.date.startsWith(month));
@@ -306,6 +350,10 @@ function inicio() {
     '<button class="quick" onclick="go(\'lista\')"><b>🛍️</b>Compras</button>'+
     '<button class="quick" onclick="go(\'gastos\')"><b>📊</b>Finanças</button>'+
     '<button class="quick" onclick="go(\'cardapio\')"><b>🍴</b>Cardápio</button></div></div>';
+  const participation=collaborationSummary();
+  h += '<div class="card"><div class="split-head"><h2>Colaboração da semana</h2><button class="link" onclick="go(\'colabora\')">Ver pessoas →</button></div>'+
+    '<div style="font-weight:900;font-size:23px">'+participation.participated+' de '+participation.participants+' pessoas</div>'+
+    '<div class="mut">com compras ou despesas registradas nesta semana</div></div>';
   h += '<div class="card"><div class="split-head"><h2>Quem compra nesta semana?</h2><button class="link" onclick="go(\'semana\')">Ver escala →</button></div><div style="font-weight:900;font-size:23px">'+esc(buyerName)+'</div><div class="mut">Semana de '+br(ws)+'.</div></div>';
   h += '<div class="card"><div class="split-head"><h2>Lista de compras</h2><button class="link" onclick="go(\'lista\')">Ver tudo →</button></div>';
   h += pending.length?pending.slice(0,5).map(i=>'<div class="row"><div class="n"><b>'+esc(i.name)+'</b>'+(i.qty?'<span class="chip">'+esc(i.qty)+'</span>':'')+'</div><span class="tiny">Pendente</span></div>').join(''):'<div class="empty">Lista em dia! Adicione o que estiver faltando.</div>';
