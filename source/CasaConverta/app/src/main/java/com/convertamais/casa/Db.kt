@@ -13,7 +13,7 @@ import java.util.Date
 import java.util.Locale
 
 /** Banco de dados da casa. Fica só no celular do administrador. */
-class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 1) {
+class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 2) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE members(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, position INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1)")
@@ -21,9 +21,12 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 1) {
         db.execSQL("CREATE TABLE expenses(id INTEGER PRIMARY KEY AUTOINCREMENT, member_id INTEGER NOT NULL, amount INTEGER NOT NULL, kind TEXT NOT NULL, note TEXT, date TEXT NOT NULL, created INTEGER NOT NULL)")
         db.execSQL("CREATE TABLE settings(k TEXT PRIMARY KEY, v TEXT)")
         db.execSQL("CREATE TABLE overrides(week_start TEXT PRIMARY KEY, member_id INTEGER NOT NULL)")
+        db.execSQL("CREATE TABLE meal_plan(day INTEGER NOT NULL, meal TEXT NOT NULL, dish TEXT NOT NULL, note TEXT NOT NULL DEFAULT '', updated INTEGER NOT NULL, PRIMARY KEY(day,meal))")
     }
 
-    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {}
+    override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        if (oldVersion < 2) db.execSQL("CREATE TABLE IF NOT EXISTS meal_plan(day INTEGER NOT NULL, meal TEXT NOT NULL, dish TEXT NOT NULL, note TEXT NOT NULL DEFAULT '', updated INTEGER NOT NULL, PRIMARY KEY(day,meal))")
+    }
 
     // ---------- estado completo (o painel web lê isto) ----------
     @Synchronized
@@ -51,6 +54,13 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 1) {
                     .put("kind", c.getString(3)).put("note", c.getString(4) ?: "").put("date", c.getString(5)).put("created", c.getLong(6))
             )
         }
+        val meals = JSONArray()
+        d.rawQuery("SELECT day,meal,dish,note,updated FROM meal_plan ORDER BY day,meal", null).use { c ->
+            while (c.moveToNext()) meals.put(
+                JSONObject().put("day",c.getInt(0)).put("meal",c.getString(1))
+                    .put("dish",c.getString(2)).put("note",c.getString(3)).put("updated",c.getLong(4))
+            )
+        }
         val settings = JSONObject()
         d.rawQuery("SELECT k,v FROM settings WHERE k <> 'pin_hash' AND k <> 'pin_salt'", null).use { c ->
             while (c.moveToNext()) settings.put(c.getString(0), c.getString(1))
@@ -60,7 +70,7 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 1) {
             while (c.moveToNext()) overrides.put(c.getString(0), c.getLong(1))
         }
         return JSONObject().put("pinSet", hasPin()).put("members", members).put("items", items)
-            .put("expenses", expenses).put("settings", settings).put("overrides", overrides)
+            .put("expenses", expenses).put("menu", meals).put("settings", settings).put("overrides", overrides)
             .put("today", SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()))
     }
 
@@ -139,6 +149,18 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 1) {
 
     @Synchronized fun deleteExpense(id: Long) {
         writableDatabase.execSQL("DELETE FROM expenses WHERE id=?", arrayOf(id))
+    }
+
+    // ---------- cardápio semanal (preserva demais dados do SQLite) ----------
+    @Synchronized fun saveMeal(day: Int, meal: String, dish: String, note: String) {
+        writableDatabase.execSQL(
+            "INSERT OR REPLACE INTO meal_plan(day,meal,dish,note,updated) VALUES(?,?,?,?,?)",
+            arrayOf<Any>(day,meal,dish,note,System.currentTimeMillis())
+        )
+    }
+
+    @Synchronized fun deleteMeal(day: Int, meal: String) {
+        writableDatabase.execSQL("DELETE FROM meal_plan WHERE day=? AND meal=?", arrayOf(day,meal))
     }
 
     // ---------- troca de quem compra numa semana ----------
