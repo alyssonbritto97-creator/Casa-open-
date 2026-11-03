@@ -79,7 +79,7 @@ class CasaServer(private val ctx: Context, port: Int, private val db: Db) : Nano
             val amount = body.optLong("amount", 0)
             val member = body.optLongOrNull("member_id") ?: return err(400, "Escolha quem pagou.")
             if (amount <= 0) return err(400, "Digite um valor maior que zero.")
-            val kind = body.optString("kind").let { if (it in setOf("compra", "energia", "outro")) it else "compra" }
+            val kind = body.optString("kind").let { if (it in setOf("compra", "mercado", "energia", "agua", "internet", "aluguel", "gas", "limpeza", "saude", "transporte", "manutencao", "outro")) it else "compra" }
             val date = body.optString("date").let { if (Regex("\\d{4}-\\d{2}-\\d{2}").matches(it)) it else db.state().getString("today") }
             db.addExpense(member, amount, kind, body.optString("note").trim().take(80), date)
             return ok()
@@ -109,6 +109,22 @@ class CasaServer(private val ctx: Context, port: Int, private val db: Db) : Nano
                     if (g < 0) return err(400, "Meta inválida.")
                     db.setSetting("monthly_goal", g.toString())
                 }
+            }
+            method == Method.POST && path == "menu" -> {
+                val day = body.optInt("day", -1)
+                val meal = body.optString("meal")
+                val dish = body.optString("dish").trim().take(100)
+                val note = body.optString("note").trim().take(180)
+                if (day !in 0..6 || meal !in setOf("cafe", "almoco", "lanche", "jantar") || dish.isEmpty())
+                    return err(400, "Informe um dia, uma refeição e um prato.")
+                db.saveMeal(day, meal, dish, note)
+            }
+            method == Method.DELETE && path == "menu" -> {
+                val day = s.parameters["day"]?.firstOrNull()?.toIntOrNull() ?: -1
+                val meal = s.parameters["meal"]?.firstOrNull() ?: ""
+                if (day !in 0..6 || meal !in setOf("cafe", "almoco", "lanche", "jantar"))
+                    return err(400, "Dia ou refeição inválida.")
+                db.deleteMeal(day, meal)
             }
             method == Method.POST && path == "overrides" ->
                 db.setOverride(body.optString("week_start"), body.optLongOrNull("member_id"))
