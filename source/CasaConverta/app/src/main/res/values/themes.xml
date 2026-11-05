@@ -1,8 +1,0 @@
-<resources>
-    <style name="Theme.Casa" parent="android:Theme.Material.Light.NoActionBar">
-        <item name="android:windowBackground">#F3F5FA</item>
-        <item name="android:statusBarColor">#F3F5FA</item>
-        <item name="android:navigationBarColor">#F3F5FA</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
-</resources>
