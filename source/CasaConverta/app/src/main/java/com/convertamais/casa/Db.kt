@@ -13,7 +13,7 @@ import java.util.Date
 import java.util.Locale
 
 /** Banco de dados da casa. Fica só no celular do administrador. */
-class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 2) {
+class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 3) {
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE members(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, position INTEGER NOT NULL, active INTEGER NOT NULL DEFAULT 1)")
@@ -22,10 +22,16 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 2) {
         db.execSQL("CREATE TABLE settings(k TEXT PRIMARY KEY, v TEXT)")
         db.execSQL("CREATE TABLE overrides(week_start TEXT PRIMARY KEY, member_id INTEGER NOT NULL)")
         db.execSQL("CREATE TABLE meal_plan(day INTEGER NOT NULL, meal TEXT NOT NULL, dish TEXT NOT NULL, note TEXT NOT NULL DEFAULT '', updated INTEGER NOT NULL, PRIMARY KEY(day,meal))")
+        db.execSQL("CREATE TABLE IF NOT EXISTS docs(id INTEGER PRIMARY KEY AUTOINCREMENT, coll TEXT NOT NULL, k TEXT, data TEXT NOT NULL, updated INTEGER NOT NULL)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS docs_coll ON docs(coll,k)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         if (oldVersion < 2) db.execSQL("CREATE TABLE IF NOT EXISTS meal_plan(day INTEGER NOT NULL, meal TEXT NOT NULL, dish TEXT NOT NULL, note TEXT NOT NULL DEFAULT '', updated INTEGER NOT NULL, PRIMARY KEY(day,meal))")
+        if (oldVersion < 3) {
+            db.execSQL("CREATE TABLE IF NOT EXISTS docs(id INTEGER PRIMARY KEY AUTOINCREMENT, coll TEXT NOT NULL, k TEXT, data TEXT NOT NULL, updated INTEGER NOT NULL)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS docs_coll ON docs(coll,k)")
+        }
     }
 
     // ---------- estado completo (o painel web lê isto) ----------
@@ -69,7 +75,19 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 2) {
         d.rawQuery("SELECT week_start,member_id FROM overrides", null).use { c ->
             while (c.moveToNext()) overrides.put(c.getString(0), c.getLong(1))
         }
-        return JSONObject().put("pinSet", hasPin()).put("members", members).put("items", items)
+        val docs = JSONObject()
+        d.rawQuery("SELECT id,coll,k,data,updated FROM docs ORDER BY id", null).use { c ->
+            while (c.moveToNext()) {
+                val coll = c.getString(1)
+                val arr = docs.optJSONArray(coll) ?: JSONArray().also { docs.put(coll, it) }
+                val o = try { JSONObject(c.getString(3)) } catch (e: Exception) { JSONObject() }
+                o.put("id", c.getLong(0))
+                if (!c.isNull(2)) o.put("key", c.getString(2))
+                o.put("updated", c.getLong(4))
+                arr.put(o)
+            }
+        }
+        return JSONObject().put("docs", docs).put("pinSet", hasPin()).put("members", members).put("items", items)
             .put("expenses", expenses).put("menu", meals).put("settings", settings).put("overrides", overrides)
             .put("today", SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()))
     }
@@ -167,5 +185,38 @@ class Db(ctx: Context) : SQLiteOpenHelper(ctx, "casa.db", null, 2) {
     @Synchronized fun setOverride(weekStart: String, memberId: Long?) {
         if (memberId == null) writableDatabase.execSQL("DELETE FROM overrides WHERE week_start=?", arrayOf(weekStart))
         else writableDatabase.execSQL("INSERT OR REPLACE INTO overrides(week_start,member_id) VALUES(?,?)", arrayOf(weekStart, memberId))
+    }
+
+    // ---------- registros livres (casa, comida, pets, metas, emergência…) ----------
+    @Synchronized fun docCount(coll: String): Int =
+        readableDatabase.rawQuery("SELECT COUNT(*) FROM docs WHERE coll=?", arrayOf(coll)).use { it.moveToFirst(); it.getInt(0) }
+
+    /** Grava um registro. Com [id] atualiza; com [key] cria ou atualiza o registro daquela chave. */
+    @Synchronized fun saveDoc(coll: String, id: Long?, key: String?, data: String): Long {
+        val d = writableDatabase
+        val now = System.currentTimeMillis()
+        if (id != null) {
+            d.execSQL("UPDATE docs SET data=?, updated=? WHERE id=? AND coll=?", arrayOf<Any>(data, now, id, coll))
+            return id
+        }
+        if (key != null) {
+            val found: Long? = d.rawQuery("SELECT id FROM docs WHERE coll=? AND k=?", arrayOf(coll, key)).use {
+                if (it.moveToFirst()) it.getLong(0) else null
+            }
+            if (found != null) {
+                d.execSQL("UPDATE docs SET data=?, updated=? WHERE id=?", arrayOf<Any>(data, now, found))
+                return found
+            }
+        }
+        return d.insert("docs", null, ContentValues().apply {
+            put("coll", coll)
+            if (key != null) put("k", key)
+            put("data", data)
+            put("updated", now)
+        })
+    }
+
+    @Synchronized fun deleteDoc(coll: String, id: Long) {
+        writableDatabase.execSQL("DELETE FROM docs WHERE id=? AND coll=?", arrayOf<Any>(id, coll))
     }
 }

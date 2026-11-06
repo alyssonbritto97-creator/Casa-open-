@@ -69,15 +69,15 @@ class ServerService : Service() {
 
     private fun startInForeground() {
         val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        nm.createNotificationChannel(NotificationChannel(CHANNEL, "Casa+ ligado", NotificationManager.IMPORTANCE_LOW))
+        nm.createNotificationChannel(NotificationChannel(CHANNEL, "Open House ligado", NotificationManager.IMPORTANCE_LOW))
         val open = android.app.PendingIntent.getActivity(
             this, 0, Intent(this, MainActivity::class.java),
             android.app.PendingIntent.FLAG_IMMUTABLE or android.app.PendingIntent.FLAG_UPDATE_CURRENT
         )
         val n: Notification = NotificationCompat.Builder(this, CHANNEL)
             .setSmallIcon(applicationInfo.icon)
-            .setContentTitle("Casa+ está ligado")
-            .setContentText("O pessoal da casa já pode acessar pelo Wi-Fi.")
+            .setContentTitle("Open House está ligado")
+            .setContentText("The house can now connect over Wi-Fi · A casa já acessa pelo Wi-Fi.")
             .setContentIntent(open)
             .setOngoing(true)
             .build()

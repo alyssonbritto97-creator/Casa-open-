@@ -1,39 +1,39 @@
-# Casa+ | Gestão do lar
+# Open House — better home, prosperous home
 
-Aplicativo Android com painel familiar acessível por navegador na **mesma rede Wi-Fi**. O celular Android do administrador hospeda o painel e mantém o banco local.
+© Jose Brito · Converta+. Todos os direitos reservados (veja `LICENSE`).
 
-## Versão renovada (novembro/2026)
-- **Início**: dashboard responsivo com despesas do mês, orçamento, compras pendentes, itens comprados, escala, cardápio do dia, últimos gastos e atalhos.
-- **Escala**: rodízio semanal de quem faz as compras; administrador pode trocar uma semana.
-- **Compras**: itens com quantidade, histórico de comprados e possibilidade de desfazer.
-- **Finanças**: registro de gastos por pessoa com categorias (mercado, energia, água, internet, aluguel, gás, limpeza, saúde, transporte, manutenção e outras), resumo, meta e divisão.
-- **Cardápio**: planeje café, almoço, lanche e jantar para todos os dias. Administração pode editar; família pode consultar e adicionar ingredientes informados à lista de compras.
-- **Pessoas**: cadastro, ordem do rodízio, meta mensal e acesso de administrador por PIN.
-- Banco SQLite migrado da v1 para a v2 sem apagar pessoas, compras ou despesas anteriores.
+Aplicativo Android para organizar a casa entre várias pessoas. Em português e espanhol (Mais → Idioma e link).
 
-## Sincronização dos celulares pela mesma rede Wi-Fi
-- O celular Android do administrador continua sendo o **servidor da casa**: abra o aplicativo e mantenha o servidor ligado.
-- Os demais celulares (Android ou iPhone) abrem **o mesmo endereço local** fornecido pelo aplicativo, no navegador, sem precisar instalar o APK.
-- Cada mudança na lista de compras ou nas despesas fica no banco central do administrador. As outras telas consultam as atualizações aproximadamente **a cada 2,5 segundos** enquanto estão abertas.
-- O painel mostra **Sincronizado** ou **Sem conexão**. Se a pessoa estiver digitando, a tela não sobrescreve o campo: aparece **Novidades · atualizar**, com atualização após sair do campo.
-- Não é necessário que todos abram o painel ao mesmo tempo; o servidor precisa permanecer acessível na rede. Wi-Fi com isolamento de clientes (como redes de convidados) pode bloquear o acesso entre celulares.
-- A aba **Colaboração** resume a semana: itens efetivamente marcados como comprados, despesas e pedidos na lista por pessoa. Compras registradas à noite entram na respectiva semana. "Sem registro" não significa que a pessoa não ajudou fora do aplicativo.
+## Como funciona
+- O celular do **administrador** instala o app e liga o "servidor da casa". Os dados ficam só nesse celular.
+- Os outros celulares, no **mesmo Wi-Fi**, abrem o endereço mostrado no app (ex.: http://192.168.0.10:8080) no navegador. Não precisa instalar nada. O link pode ser enviado pelo WhatsApp.
+- O administrador cria um PIN (só no celular dele) e cadastra as pessoas. Cada pessoa escolhe o próprio nome (👤, no topo) para registrar o que fez.
+- Tudo funciona sem internet, só dentro do Wi-Fi da casa.
 
-## Acesso e segurança
-- Somente o aplicativo Android administrador mantém os dados. Outros celulares no mesmo Wi-Fi acessam o endereço IP mostrado pelo aplicativo. Acessar de fora de casa exige infraestrutura adicional.
-- O servidor **precisa permanecer ligado** no celular Android. Se o telefone for desligado, sair da rede ou o serviço parar, o painel não ficará acessível.
-- Qualquer pessoa com acesso à rede pode consultar o painel, adicionar itens e registrar gastos; as operações administrativas exigem PIN. **Não use em Wi-Fi público**.
-- Não há sincronização na nuvem, backup automático, cobrança online nem publicação para iOS.
-- Não colocar dados pessoais reais em capturas ou testes.
+## O que tem
+- **Início**: painel com % da casa em dia, gasto do mês, alertas e a casa animada. A faixa do topo (casa, gasto, compras, água, alertas) fica visível em todas as telas.
+- **Casa**: desenho animado com 18 partes (telhado, calhas, caixa d'água, muro, portão, elétrica, encanamento, esgoto, gás, cômodos…). Cada parte tem deveres, responsável, quem ajuda, estado (em dia, atenção, precisa consertar, em conserto), próxima revisão, custo do conserto e histórico. Partes críticas ficam marcadas. Tarefas da casa com quem faz e quando.
+- **Comida**: o que está sendo feito hoje e por quem, quem comprou, escala de quem cozinha, geladeira/despensa com quantidades e validade, sugestões do que dá para cozinhar, **estoque para 3–12 meses (meta padrão: 6)**, **controle de água potável** (por que não beber da torneira, litros por pessoa, dias restantes, compras) e histórico de compras da semana, café, almoço, lanche e jantar.
+- **Compras**: lista do que falta; vem da despensa, das receitas, do cardápio e das partes da casa.
+- **Finanças**: custo da casa (por dia, por pessoa, comparação com o mês passado, previsão), **limites por categoria**, quem recebe e quem deve, contas fixas com vencimento, metas para guardar dinheiro juntos e compras futuras.
+- **Mais**: escala semanal de compras, cardápio, colaboração (quem ajudou na semana e nos últimos 30 dias), pets (ração, vacinas), **emergência** (pessoas, doentes, partes críticas, kit, quem faz o quê, telefones), **primeiros socorros** (guia e kit da casa), **veículos** (manutenção por data e km, custos), pessoas e idioma.
 
-## Como testar
-1. Em **Actions**, abra o workflow **Validar Casa+ renovado** na branch `main` (ou branch de desenvolvimento).
-2. Confirme as etapas "Validar JavaScript do painel" e "Compilar APK Android" concluídas.
-3. Baixe o artefato `Casa-Plus-Painel-2026-APK`, extraia o ZIP e instale o APK em um Android compatível.
-4. Abra o aplicativo, ligue o servidor local, entre no painel, cadastre pessoas, faça uma compra e salve uma refeição.
-5. Com outro celular no mesmo Wi-Fi, abra no navegador o endereço mostrado pelo administrador.
+## Limites
+- Se o celular do administrador estiver desligado ou fora do Wi-Fi, ninguém acessa.
+- Deixe-o carregando e sem economia de bateria para o Open House.
+- Todos da casa podem registrar e atualizar; só o administrador apaga dados financeiros, cria contas fixas, metas e limites.
+- As orientações de primeiros socorros são gerais e não substituem atendimento médico.
 
-O artefato é **APK de teste**, não release comercial; exigem-se testes em dispositivo real e revisão de segurança antes de distribuir amplamente.
+## Compilar (GitHub, sem computador)
+1. No repositório, crie `.github/workflows/build-casa.yml` com o conteúdo do `build-casa.yml`.
+2. Suba o `Z-Casa-Converta.zip` na raiz. A compilação começa sozinha (aba Actions).
+3. Quando ficar verde, baixe `Casa-APK` em Artifacts, extraia e instale o `Casa-Converta.apk`.
 
-## Código-fonte
-A versão editável do aplicativo está em `source/CasaConverta/`. O ZIP original `Z-Casa-Converta.zip` foi preservado somente como referência/backup e não é mais a fonte da versão renovada.
+## Notas da versão
+- Novo nome: Open House. Novo ícone.
+- Casa animada com deveres, manutenção e responsáveis por parte.
+- Comida, estoque de 6 meses, água potável, pets, veículos, primeiros socorros e emergência.
+- Controle de gastos por categoria, contas fixas, metas e compras futuras.
+- Português e espanhol.
+- Cores: azul-marinho, verde-limão nos botões de destaque, branco e cinza-gelo.
+- Páginas em Next.js (pasta `web/`): resumo do mês em `/next/` e ficha do imóvel para imprimir em `/next/ficha/`. Elas são compiladas pelo fluxo do GitHub; se essa etapa falhar, o app continua funcionando sem elas. Não consegui compilar o Next.js aqui, então essa parte não foi testada.

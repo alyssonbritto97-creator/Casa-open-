@@ -42,12 +42,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+private fun tr(pt: String, es: String): String =
+    if (java.util.Locale.getDefault().language == "es") es else pt
+
 private val Navy = Color(0xFF0B1D4D)
 private val Green = Color(0xFF9BC53D)
 private val Muted = Color(0xFF5C6A8A)
 private val Line = Color(0xFFD9DEEA)
 
-/** Casa+ © Converta+ — Desenvolvido por Jose Brito. */
+/** Open House © Jose Brito · Converta+. Todos os direitos reservados. */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,21 +87,22 @@ private fun Control() {
             painterResource(R.drawable.logo_converta), contentDescription = "Converta+",
             contentScale = ContentScale.Fit, modifier = Modifier.height(96.dp)
         )
-        Text("Casa+", color = Navy, fontSize = 30.sp, fontWeight = FontWeight.Black)
-        Text("Cota semanal, lista de compras e gastos da casa", color = Muted, fontSize = 14.sp)
+        Text("Open House", color = Navy, fontSize = 30.sp, fontWeight = FontWeight.Black)
+        Text(tr("Better home · Prosperous home", "Better home · Prosperous home"), color = Muted, fontSize = 14.sp)
+        Text(tr("Casa, comida, contas e colaboração", "Casa, comida, cuentas y colaboración"), color = Muted, fontSize = 13.sp)
 
         Column(
             Modifier.fillMaxWidth().clip(RoundedCornerShape(20.dp)).background(Color.White)
                 .border(1.dp, Line, RoundedCornerShape(20.dp)).padding(18.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            Text(if (running) "Servidor ligado" else "Servidor desligado",
+            Text(if (running) tr("Servidor ligado", "Servidor encendido") else tr("Servidor desligado", "Servidor apagado"),
                 color = if (running) Color(0xFF3F7A00) else Muted, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             if (running) {
-                Text("Peça para o pessoal abrir este endereço no navegador, ligado no mesmo Wi-Fi:", color = Muted, fontSize = 13.sp)
+                Text(tr("Peça para o pessoal abrir este endereço no navegador, ligado no mesmo Wi-Fi:", "Pida a la gente que abra esta dirección en el navegador, en el mismo Wi-Fi:"), color = Muted, fontSize = 13.sp)
                 Text(address ?: "", color = Navy, fontSize = 22.sp, fontWeight = FontWeight.Black)
             } else {
-                Text("Ligue para os outros celulares da casa acessarem. Os dados ficam só neste celular.", color = Muted, fontSize = 13.sp)
+                Text(tr("Ligue para os outros celulares da casa acessarem. Os dados ficam só neste celular.", "Enciéndalo para que los otros celulares de la casa accedan. Los datos quedan solo en este celular."), color = Muted, fontSize = 13.sp)
             }
             error?.let { Text(it, color = Color(0xFFE5334B), fontSize = 13.sp) }
         }
@@ -107,7 +111,7 @@ private fun Control() {
             Button(
                 onClick = { start() }, modifier = Modifier.fillMaxWidth().height(52.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Green, contentColor = Navy)
-            ) { Text("Ligar servidor da casa", fontWeight = FontWeight.Bold) }
+            ) { Text(tr("Ligar servidor da casa", "Encender servidor de la casa"), fontWeight = FontWeight.Bold) }
         } else {
             Button(
                 onClick = {
@@ -115,27 +119,27 @@ private fun Control() {
                 },
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Navy, contentColor = Color.White)
-            ) { Text("Abrir painel (administrador)", fontWeight = FontWeight.Bold) }
+            ) { Text(tr("Abrir painel (administrador)", "Abrir panel (administrador)"), fontWeight = FontWeight.Bold) }
             OutlinedButton(
                 onClick = {
                     val send = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, "Casa+ — abra no navegador, no mesmo Wi-Fi da casa: $address")
+                        putExtra(Intent.EXTRA_TEXT, tr("Open House — abra no navegador, no mesmo Wi-Fi da casa: $address", "Open House — abra en el navegador, en el mismo Wi-Fi de la casa: $address"))
                     }
-                    ctx.startActivity(Intent.createChooser(send, "Enviar link"))
+                    ctx.startActivity(Intent.createChooser(send, tr("Enviar link", "Enviar enlace")))
                 },
                 modifier = Modifier.fillMaxWidth().height(52.dp)
-            ) { Text("Enviar link (WhatsApp…)", color = Navy, fontWeight = FontWeight.Bold) }
+            ) { Text(tr("Enviar link (WhatsApp…)", "Enviar enlace (WhatsApp…)"), color = Navy, fontWeight = FontWeight.Bold) }
             OutlinedButton(onClick = { stop() }, modifier = Modifier.fillMaxWidth()) {
-                Text("Desligar servidor", color = Color(0xFFE5334B))
+                Text(tr("Desligar servidor", "Apagar servidor"), color = Color(0xFFE5334B))
             }
         }
 
         Spacer(Modifier.weight(1f))
         Text(
-            "Dica: deixe este celular carregando e com a economia de bateria desligada para o Casa+, assim o servidor não para.",
+            tr("Dica: deixe este celular carregando e com a economia de bateria desligada para o Open House, assim o servidor não para.", "Consejo: deje este celular cargando y con el ahorro de batería desactivado para Open House, así el servidor no se detiene."),
             color = Muted, fontSize = 12.sp
         )
-        Text("Casa+  •  Converta+  •  Desenvolvido por Jose Brito", color = Muted, fontSize = 11.sp)
+        Text("Open House  •  © Converta+  •  Jose Brito", color = Muted, fontSize = 11.sp)
     }
 }
