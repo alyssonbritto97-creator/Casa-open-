@@ -77,6 +77,11 @@ class CasaServer(private val ctx: Context, port: Int, private val db: Db) : Nano
             return err(401, "PIN incorreto.")
         }
 
+        // ----- visitantes podem consultar; somente administrador altera dados -----
+        if (method != Method.GET && path != "login" && path != "setup" && !admin) {
+            return err(403, "Acesso de visitante: somente leitura.")
+        }
+
         // ----- ações abertas a todos da casa -----
         if (method == Method.POST && path == "items") {
             val name = body.optString("name").trim().take(60)
