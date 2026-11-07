@@ -1,39 +1,47 @@
-# Open House — better home, prosperous home
+# VISTA360 | Apresentação imobiliária 3D
 
-© Jose Brito · Converta+. Todos os direitos reservados (veja `LICENSE`).
+Experiência web para corretoras e construtoras: escolha de apartamentos, valores e disponibilidade ilustrativos, comparador de iluminação e passeio interativo em Three.js, com versão adaptável a celulares, tablets e computadores.
 
-Aplicativo Android para organizar a casa entre várias pessoas. Em português e espanhol (Mais → Idioma e link).
+## Comece em 1 minuto
 
-## Como funciona
-- O celular do **administrador** instala o app e liga o "servidor da casa". Os dados ficam só nesse celular.
-- Os outros celulares, no **mesmo Wi-Fi**, abrem o endereço mostrado no app (ex.: http://192.168.0.10:8080) no navegador. Não precisa instalar nada. O link pode ser enviado pelo WhatsApp.
-- O administrador cria um PIN (só no celular dele) e cadastra as pessoas. Cada pessoa escolhe o próprio nome (👤, no topo) para registrar o que fez.
-- Tudo funciona sem internet, só dentro do Wi-Fi da casa.
+```bash
+python3 -m http.server 8000
+```
 
-## O que tem
-- **Início**: painel com % da casa em dia, gasto do mês, alertas e a casa animada. A faixa do topo (casa, gasto, compras, água, alertas) fica visível em todas as telas.
-- **Casa**: desenho animado com 18 partes (telhado, calhas, caixa d'água, muro, portão, elétrica, encanamento, esgoto, gás, cômodos…). Cada parte tem deveres, responsável, quem ajuda, estado (em dia, atenção, precisa consertar, em conserto), próxima revisão, custo do conserto e histórico. Partes críticas ficam marcadas. Tarefas da casa com quem faz e quando.
-- **Comida**: o que está sendo feito hoje e por quem, quem comprou, escala de quem cozinha, geladeira/despensa com quantidades e validade, sugestões do que dá para cozinhar, **estoque para 3–12 meses (meta padrão: 6)**, **controle de água potável** (por que não beber da torneira, litros por pessoa, dias restantes, compras) e histórico de compras da semana, café, almoço, lanche e jantar.
-- **Compras**: lista do que falta; vem da despensa, das receitas, do cardápio e das partes da casa.
-- **Finanças**: custo da casa (por dia, por pessoa, comparação com o mês passado, previsão), **limites por categoria**, quem recebe e quem deve, contas fixas com vencimento, metas para guardar dinheiro juntos e compras futuras.
-- **Mais**: escala semanal de compras, cardápio, colaboração (quem ajudou na semana e nos últimos 30 dias), pets (ração, vacinas), **emergência** (pessoas, doentes, partes críticas, kit, quem faz o quê, telefones), **primeiros socorros** (guia e kit da casa), **veículos** (manutenção por data e km, custos), pessoas e idioma.
+Abra `http://localhost:8000/`. Não abra o HTML diretamente via `file://`, porque os módulos ES do tour 3D precisam de um servidor HTTP.
 
-## Limites
-- Se o celular do administrador estiver desligado ou fora do Wi-Fi, ninguém acessa.
-- Deixe-o carregando e sem economia de bateria para o Open House.
-- Todos da casa podem registrar e atualizar; só o administrador apaga dados financeiros, cria contas fixas, metas e limites.
-- As orientações de primeiros socorros são gerais e não substituem atendimento médico.
+> **Importante:** esta é uma **demonstração fictícia**, e o ZIP de origem **não continha todos os renders da fachada**. A versão incluída aqui usa imagens de amostra, sem simular falsamente rotação 360° nem sobrepor apartamentos sobre ângulos incompatíveis. O tour interno em 3D continua disponível.
 
-## Compilar (GitHub, sem computador)
-1. No repositório, crie `.github/workflows/build-casa.yml` com o conteúdo do `build-casa.yml`.
-2. Suba o `Z-Casa-Converta.zip` na raiz. A compilação começa sozinha (aba Actions).
-3. Quando ficar verde, baixe `Casa-APK` em Artifacts, extraia e instale o `Casa-Converta.apk`.
+## Páginas
 
-## Notas da versão
-- Novo nome: Open House. Novo ícone.
-- Casa animada com deveres, manutenção e responsáveis por parte.
-- Comida, estoque de 6 meses, água potável, pets, veículos, primeiros socorros e emergência.
-- Controle de gastos por categoria, contas fixas, metas e compras futuras.
-- Português e espanhol.
-- Cores: azul-marinho, verde-limão nos botões de destaque, branco e cinza-gelo.
-- Páginas em Next.js (pasta `web/`): resumo do mês em `/next/` e ficha do imóvel para imprimir em `/next/ficha/`. Elas são compiladas pelo fluxo do GitHub; se essa etapa falhar, o app continua funcionando sem elas. Não consegui compilar o Next.js aqui, então essa parte não foi testada.
+- `index.html` — escolhe recursos adequados ao dispositivo.
+- `celular.html` — favorece imagens leves.
+- `computador.html` — favorece qualidade de desktop.
+- `3d/` — motor do apartamento em Three.js; biblioteca Three.js obtida via CDN jsDelivr sob licença MIT. Consulte `3d/THREE-LICENSE.txt`.
+- `renders/hotspots.js` — regiões de clique para os 24 ângulos **quando o pacote completo for adicionado**.
+- `renders/preview-mode.js` — define a utilização de amostras sem giro falso.
+
+## Tornar a apresentação pronta para um empreendimento real
+
+1. Substitua os valores fictícios em `CONFIG` nas três páginas: nome, WhatsApp com código internacional, endereço, coordenadas, plantas, serviços e dados comerciais.
+2. Substitua o cálculo ilustrativo de unidades e o status gerado aleatoriamente por informações autorizadas e atualizadas da construtora. **Não anuncie preços ou disponibilidades inventadas como verdadeiros.**
+3. Importe os **24 renders de cada horário** para `renders/dia/00.jpg` até `23.jpg`, `renders/tarde/` e `renders/noite/`, bem como imagens adaptadas para `renders/m/`. O pacote de imagens completo do projeto original não foi entregue neste ZIP.
+4. Após verificar que os 24 quadros e polígonos correspondem ao mesmo prédio e ângulos, altere `window.VISTA_PREVIEW_ONLY = false` em `renders/preview-mode.js`.
+5. Acrescente imagens panorâmicas de interiores em `renders/int/`, quando disponíveis. O tour procedimental 3D independe destas imagens.
+6. Teste em iPhone e Android reais antes de apresentar ao cliente.
+
+## Publicação
+
+É um site estático: Cloudflare Pages, Netlify e GitHub Pages funcionam sem build. Suba **os arquivos desta pasta na raiz**. Para GitHub Pages, selecione a branch de publicação em Settings → Pages.
+
+## Limites atuais
+
+- Os renders de 24 ângulos não vieram no ZIP. Neste pacote, dia e noite mostram **imagens de amostra**, com rotação bloqueada.
+- O tour interno usa geometria e texturas procedurais; isso não equivale a um render fotográfico de arquitetura.
+- O briefing original descreve áreas comuns e imagens acima de 4K como objetivos, **não como funcionalidades entregues**.
+- As imagens de amostra podem ter resolução superior a 4K horizontal, mas a qualidade e fidelidade do futuro render final dependem dos arquivos do empreendimento.
+- Nomes, local, áreas, valores e disponibilidade são fictícios.
+
+## Créditos
+
+Código do projeto entregue pelo cliente. Motor Three.js incluído com licença MIT em `3d/THREE-LICENSE.txt`.
